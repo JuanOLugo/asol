@@ -10,6 +10,16 @@ const TitleSchema = new Schema<ITitle>({
     type: String,
     required: true,
   },
+  enterprise: {
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: "Enterprise",
+  },
+  Admin: {
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: "Admin",
+  },
   createAt: {
     type: String,
     default: new Date().toLocaleDateString("es-co"),

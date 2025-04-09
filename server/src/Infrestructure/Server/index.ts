@@ -7,9 +7,14 @@ import { connectDb } from "../Db/conexion.db";
 import UserRouter from "../../Interfaces/Http/Routes/User";
 import AdminRouter from "../../Interfaces/Http/Routes/Admin";
 import EnterpriseRouter from "../../Interfaces/Http/Routes/Enterprise";
+import TitleRouter from "../../Interfaces/Http/Routes/Title";
+import CapacitationRouter from "../../Interfaces/Http/Routes/Capacitation";
+import CourseRouter from "../../Interfaces/Http/Routes/Couse";
 
 // Passport
 import passportConfig from "../Auth/Passport.config";
+import CategoryRouter from "../../Interfaces/Http/Routes/Category";
+
 
 
 // Server
@@ -25,7 +30,10 @@ app.use(cors({
 app.use("/api/user", UserRouter);
 app.use("/api/admin", AdminRouter);
 app.use("/api/enterprise", EnterpriseRouter);
-
+app.use("/api/title", TitleRouter);
+app.use("/api/capacitation", CapacitationRouter);
+app.use("/api/category", CategoryRouter);
+app.use("/api/course", CourseRouter);
 // Passport config
 app.use(passportConfig.initialize());
 

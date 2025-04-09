@@ -3,7 +3,7 @@ import req from "supertest";
 import { app } from "../src/Infrestructure/Server";
 import IAdmin from "../src/Domain/Interfaces/Db Interfaces/IAdmin";
 import mongoose from "mongoose";
-
+import {  enterpriseToken, enterpriseId } from "./infrestucture/utils/UserUtils";
 beforeAll(async () => {
   await connectDb();
 });
@@ -11,8 +11,6 @@ beforeAll(async () => {
 afterAll(async () => {
   await disconnectDb();
 });
-const enterpriseToken =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZjYwNDgyMjU3MTFhMDc5YmNlZjAzMSIsImlhdCI6MTc0NDE3NzY2Mn0.icMGq_uJDzGA8IEYddW8Gu_aU_0ou8gLh9tp_S0X3AE";
 
 describe("Admin api", () => {
   it("Register new admin", async () => {

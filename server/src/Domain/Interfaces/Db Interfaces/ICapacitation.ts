@@ -9,6 +9,7 @@ interface ICapacitation {
     createAt: string;
     Admin: mongoose.Types.ObjectId;
     enterprise: mongoose.Types.ObjectId;
+    category: mongoose.Types.ObjectId;
 }
 
 export default ICapacitation;

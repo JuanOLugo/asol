@@ -4,7 +4,7 @@
   "description": "Asol System Back-end Developed by IDJA Softworks",
   "main": "intex.ts",
   "scripts": {
-    "test": "jest ",
+    "test": "jest --detectOpenHandles",
     "dev": "nodemon src/infrestructure/server/index.ts"
   },
   "repository": {

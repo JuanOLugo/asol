@@ -7,9 +7,10 @@ const UserSchema = new Schema<IUser>({
   lastName: { type: String, required: true },
   password: { type: String, required: true, select: false },
   enterprise: { type: Schema.Types.ObjectId, required: true, ref: "Enterprise" },
-  title: { type: String, required: true, ref: "Title" },
-  category: { type: String, required: true, ref: "Category" },
-  capacitation: { type: String, required: true, ref: "Capacitation" },
+  email: { type: String, required: true },
+  title: { type: Schema.Types.ObjectId, required: true, ref: "Title" },
+  category: { type: Schema.Types.ObjectId, required: true, ref: "Category" },
+  capacitation: { type: Schema.Types.ObjectId, required: true, ref: "Capacitation" },
   createAt: {
     type: String,
     required: true,

@@ -6,6 +6,8 @@ interface ICourse {
     createAt: string;
     enterprise: mongoose.Types.ObjectId;
     Admin: mongoose.Types.ObjectId;
+    category: mongoose.Types.ObjectId;
+    title: mongoose.Types.ObjectId;
 }
 
 export default ICourse;

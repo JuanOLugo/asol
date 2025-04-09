@@ -10,6 +10,12 @@ const CategorySchema = new Schema<ICategory>({
     type: String,
     required: true,
   },
+  Admin: { type: Schema.Types.ObjectId, required: true, ref: "Admin" },
+  enterprise: {
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: "Enterprise",
+  },
   createAt: {
     type: String,
     default: new Date().toLocaleDateString("es-co"),
