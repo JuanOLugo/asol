@@ -9,6 +9,7 @@ const WorkshopSchema = new Schema<IWorkshop>({
   enterprise: { type: Schema.Types.ObjectId, required: true, ref: "Enterprise" },
   Admin: { type: Schema.Types.ObjectId, required: true, ref: "Admin" },
   course: { type: Schema.Types.ObjectId, required: true, ref: "Course" },
+  position: { type: Number, required: true },
 });
 
 const WorkshopModel = model<IWorkshop>("Workshop", WorkshopSchema);

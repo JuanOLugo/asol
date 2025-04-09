@@ -10,7 +10,7 @@ const EnterpriseSchema = new Schema<IEnterprise>({
     required: true,
   },
   email: { type: String, required: true },
-  password: { type: String, required: true },
+  password: { type: String, required: true, select: false },
 });
 
 const EnterpriseModel = model<IEnterprise>("Enterprise", EnterpriseSchema);

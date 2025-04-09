@@ -5,7 +5,7 @@ const UserSchema = new Schema<IUser>({
   dni: { type: String, required: true },
   name: { type: String, required: true },
   lastName: { type: String, required: true },
-  password: { type: String, required: true },
+  password: { type: String, required: true, select: false },
   enterprise: { type: Schema.Types.ObjectId, required: true, ref: "Enterprise" },
   title: { type: String, required: true, ref: "Title" },
   category: { type: String, required: true, ref: "Category" },

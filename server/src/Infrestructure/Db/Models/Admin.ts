@@ -22,6 +22,7 @@ const AdminSchema = new Schema<IAdmin>({
   password: {
     type: String,
     required: true,
+    select: false,
   },
   enterprise: {
     type: Schema.Types.ObjectId,

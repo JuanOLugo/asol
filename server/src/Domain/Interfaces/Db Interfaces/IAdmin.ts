@@ -1,4 +1,4 @@
-import { ObjectId } from "mongoose";
+import mongoose, { ObjectId } from "mongoose";
 
 // Interfaz admin para la base de datos
 
@@ -9,7 +9,7 @@ interface IAdmin {
     email: string;
     password: string;
     createAt: string;
-    enterprise: ObjectId;
+    enterprise: mongoose.Types.ObjectId;
 }
 
 export default IAdmin;

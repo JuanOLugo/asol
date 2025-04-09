@@ -1,13 +1,14 @@
-import { ObjectId } from "mongoose";
+import mongoose, { ObjectId } from "mongoose";
 
 interface IWorkshop {
     title: string;
     description: string;
     createAt: string;
     finishAt: string;
-    enterprise: ObjectId;
-    Admin: ObjectId;
-    course: ObjectId;
+    enterprise: mongoose.Types.ObjectId;
+    Admin: mongoose.Types.ObjectId;
+    course: mongoose.Types.ObjectId;
+    position: number;
 }
 
 export default IWorkshop;
