@@ -1,0 +1,40 @@
+{
+  "name": "asol",
+  "version": "0.0.1",
+  "description": "Asol System Back-end Developed by IDJA Softworks",
+  "main": "intex.ts",
+  "scripts": {
+    "test": "jest --openHandlebars",
+    "dev": "nodemon src/infrestructure/server/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JuanOLugo/asol.git"
+  },
+  "keywords": [
+    "Asol"
+  ],
+  "author": "Juan Ojeda Lugo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JuanOLugo/asol/issues"
+  },
+  "homepage": "https://github.com/JuanOLugo/asol#readme",
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.1",
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.9",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.13.2",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0",
+    "supertest": "^7.1.0"
+  }
+}

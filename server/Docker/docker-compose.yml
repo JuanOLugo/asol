@@ -1,0 +1,13 @@
+services:
+  mongodb:
+    ports:
+      - "27017:27017"
+    image: mongo 
+    networks:
+      - server-asol
+    container_name: basedatos_asol
+    volumes:
+      - /data/db
+networks:
+  server-asol:
+    driver: bridge
