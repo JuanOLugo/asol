@@ -2,6 +2,7 @@ import { Router } from "express";
 import AdminController from "../Controllers/Admin";
 import passportConfig from "../../../Infrestructure/Auth/Passport.config";
 
+
 const AdminRouter = Router();
 
 AdminRouter.post("/register", passportConfig.authenticate("jwt", { session: false }), new AdminController().RegisterAdmin);

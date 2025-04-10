@@ -12,20 +12,20 @@ import CapacitationRouter from "../../Interfaces/Http/Routes/Capacitation";
 import CourseRouter from "../../Interfaces/Http/Routes/Couse";
 
 // Passport
-import passportConfig from "../Auth/Passport.config";
+import passportConfig from "../../Infrestructure/Auth/Passport.config";
 import CategoryRouter from "../../Interfaces/Http/Routes/Category";
-
-
 
 // Server
 export const app = express();
 
 // Middlewares
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+  })
+);
 app.use(express.json());
-app.use(cors({
-    origin: "*",
-    credentials: true
-}));
 
 app.use("/api/user", UserRouter);
 app.use("/api/admin", AdminRouter);
@@ -34,19 +34,21 @@ app.use("/api/title", TitleRouter);
 app.use("/api/capacitation", CapacitationRouter);
 app.use("/api/category", CategoryRouter);
 app.use("/api/course", CourseRouter);
+
 // Passport config
 app.use(passportConfig.initialize());
 
 // Static files
 app.use(express.static(path.join(__dirname, "public")));
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "index.html"));
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
-
 
 // Start server
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log("Server is running on port", port);
-  connectDb();
+
+connectDb().then(() => {
+  app.listen(port, () => {
+    console.log("Server is running on port", port);
+  });
 });

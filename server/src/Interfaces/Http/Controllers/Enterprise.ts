@@ -13,18 +13,22 @@ class EnterpriseController {
         .cookie("token", enterprise?.token)
         .send({ message: "Enterprise registered successfully" });
     } catch (error: any) {
+      console.log(error);
       res.status(400).send({ message: error.message });
+      
     }
   }
 
   public async GetEnterprise(req: Request, res: Response) {
     const enterpriseRepository = new EnterpriseRepository();
+    const enterpriseId = (req.user as { _id: string })?._id;
     try {
       const enterprise = await enterpriseRepository.GetEnterprise(
-        req.params.id
+        enterpriseId
       );
       res.status(200).send(enterprise);
     } catch (error: any) {
+
       res.status(400).send({ message: error.message });
     }
   }
@@ -36,12 +40,13 @@ class EnterpriseController {
         req.body.email,
         req.body.password
       );
-
+      
       res
         .status(200)
         .cookie("token", enterprise?.token)
         .send({ msg: "Enterprise logged in successfully" });
     } catch (error: any) {
+      console.log(error);
       res.status(400).send({ message: error.message });
     }
   }
