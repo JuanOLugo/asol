@@ -3,7 +3,7 @@ function PublicRoute() {
   const token = window.localStorage.getItem("enterprise-session");
 
   if (token) {
-    return <Navigate to="/" />;
+    return <Navigate to="/enterprise" />;
   }
   return <Outlet />;
 }

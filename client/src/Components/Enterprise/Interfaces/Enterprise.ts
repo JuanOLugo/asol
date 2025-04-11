@@ -6,4 +6,5 @@ interface IEnterprise {
   _id: string;
 }
 
+
 export default IEnterprise

@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 import jsonwebtoken from "jsonwebtoken";
 
 class AdminRepository {
-  public async RegisterAdmin(admin: IAdmin) {
+  public async RegisterAdmin(admin: IAdmin, enterpriseId: string) {
     const adminEntity = new AdminEntity();
     if (
       adminEntity.verifyPassword(admin.password) &&
@@ -18,6 +18,7 @@ class AdminRepository {
       const adminModel = new AdminModel({
         ...admin,
         password: await bcrypt.hash(admin.password, 10),
+        enterprise: enterpriseId,
       });
       const adminSaved = await adminModel.save();
       return {

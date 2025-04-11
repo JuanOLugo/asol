@@ -21,7 +21,7 @@ class EnterpriseController {
 
   public async GetEnterprise(req: Request, res: Response) {
     const enterpriseRepository = new EnterpriseRepository();
-    const enterpriseId = (req.user as { _id: string })?._id;
+    const enterpriseId = (req.user as { _id: string })?._id; 
     try {
       const enterprise = await enterpriseRepository.GetEnterprise(
         enterpriseId

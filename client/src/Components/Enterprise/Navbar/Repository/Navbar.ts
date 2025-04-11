@@ -1,3 +1,4 @@
+
 class EnterpriseRepository {
     public async LogoutEnterprise() {
         window.localStorage.removeItem("enterprise-session")
