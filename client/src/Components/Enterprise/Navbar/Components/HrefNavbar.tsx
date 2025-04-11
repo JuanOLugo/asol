@@ -26,18 +26,12 @@ const HrefNavbarItems = [
     icon: <LogOut size={20} />,
     validate: Cookies.get("admin-token") ? false : true,
   },
-  {
-    name: "Cerrar sesion administrador",
-    icon: <LogOut size={20} />,
-    validate: Cookies.get("admin-token") ? true : false,
-  },
   
 ];
 
 function HrefNavbar({
   LogoutEnterprise,
   setIsMenuOpen,
-  LogoutAdmin,
 }: IEnterpriseMobileMenu) {
   return (
     <>
@@ -59,7 +53,7 @@ function HrefNavbar({
         } else {
           return (
             <button
-              onClick={LogoutAdmin}
+              onClick={() => LogoutEnterprise()}
               className="flex items-center gap-2 text-white bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium w-[320px]"
               key={index}
             >
