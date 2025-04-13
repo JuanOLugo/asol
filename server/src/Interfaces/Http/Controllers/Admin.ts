@@ -9,7 +9,6 @@ class AdminController {
       const admin = await adminRepository.RegisterAdmin(req.body, enterpriseId);
       res
         .status(201)
-        .cookie("admin-token", admin?.token)
         .send({ message: "Admin registered successfully" });
     } catch (error: any) {
       res.status(400).send({ message: error.message });
@@ -18,8 +17,9 @@ class AdminController {
 
   public async GetAdmin(req: Request, res: Response) {
     const adminRepository = new AdminRepository();
+    const enterpriseId = (req.user as { _id: string })?._id;
     try {
-      const Admin = await adminRepository.GetAdmin(req.params.id);
+      const Admin = await adminRepository.GetAdmin(req.params.id, enterpriseId);
       res.status(200).send(Admin);
     } catch (error: any) {
       res.status(400).send({ message: error.message });
@@ -28,10 +28,16 @@ class AdminController {
 
   public async LoginAdmin(req: Request, res: Response) {
     const adminRepository = new AdminRepository();
+    const enterpriseId = (req.user as { _id: string })?._id;
+    if (!enterpriseId) {
+      res.status(400).send({ message: "Enterprise ID is required" });
+      return;
+    }
     try {
       const Admin = await adminRepository.LoginAdmin(
         req.body.dni,
-        req.body.password
+        req.body.password,
+        enterpriseId
       );
 
       res

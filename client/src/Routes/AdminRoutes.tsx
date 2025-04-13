@@ -4,7 +4,7 @@ import Navbar from "../Layout/Admin/Views/Navbar";
 function AdminRoutes() {
   const token = Cookies.get("admin-token");
   const enterpriseToken = window.localStorage.getItem("enterprise-session");
-  if (!token && !enterpriseToken) {
+  if (!token || !enterpriseToken) {
     return <Navigate to="/enterprise/adminlogin" />;
   }
   return (

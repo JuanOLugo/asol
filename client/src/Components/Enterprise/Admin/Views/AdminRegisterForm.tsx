@@ -1,38 +1,75 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Eye, EyeOff, Mail, Lock, User, CreditCard } from "lucide-react"
-import IAdmin from "../Interfaces/Admin"
-import AdminRepository from "../Repository/Admin"
-
+import { useEffect, useState } from "react";
+import { Eye, EyeOff, Mail, Lock, User, CreditCard } from "lucide-react";
+import IAdmin from "../Interfaces/Admin";
+import AdminRepository from "../Repository/Admin";
+import developerController from "../../Controllers/Developer";
+import Cookies from "js-cookie";
 export default function AdminRegisterForm() {
-  const [showPassword, setShowPassword] = useState(false)
-  const { handleChange, handleSubmit, togglePasswordVisibility } = AdminRepository;
-  const [formData, setFormData] = useState<Omit<IAdmin,"enterprise">>({
+  const { getCode, verifyEmail } = developerController;
+  const [showPassword, setShowPassword] = useState(false);
+  const { handleChange, handleSubmit, togglePasswordVisibility } =
+    AdminRepository;
+  const [formData, setFormData] = useState<Omit<IAdmin, "enterprise">>({
     dni: "",
     name: "",
     lastName: "",
     email: "",
     password: "",
     createAt: new Date().toLocaleDateString("es-CO"),
-  })
+  });
+  const [CodeIsVerify, setCodeIsVerify] = useState(false);
 
+  useEffect(() => {
+    if (!Cookies.get("admin-token")) {
+      const email = prompt("Ingrese su correo electronico de desarrollo");
+      if (!email) {
+        return;
+      }
+      getCode({ email }).then((data) => {
+        const code = prompt(
+          "Ingrese el codigo de verificacion que le enviamos a su correo"
+        );
+        if (code) {
+          verifyEmail({ email: formData.email, code: code }).then((data) => {
+            setCodeIsVerify(true);
+          });
+        } else {
+          setCodeIsVerify(false);
+        }
+      });
+    } else setCodeIsVerify(true);
+  }, [])
+  if (!CodeIsVerify) {
+    return <div>Codigo no verificado</div>;
+  }
 
   return (
-    <div className="flex items-center justify-center absolute -z-10 top-0 left-0 w-full min-h-screen bg-gray-50">
+    <div className="flex items-center justify-center absolute z-10 top-0 left-0 w-full min-h-screen bg-gray-50">
       <div className="w-full max-w-md px-4">
         {/* Card Container */}
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           <div className="p-6 border-b">
-            <h2 className="text-2xl font-bold text-gray-800">Crear una cuenta</h2>
-            <p className="text-gray-600 mt-1">Ingresa tus datos para registrarte</p>
+            <h2 className="text-2xl font-bold text-gray-800">
+              Crear una cuenta
+            </h2>
+            <p className="text-gray-600 mt-1">
+              Ingresa tus datos para registrarte
+            </p>
           </div>
 
-          <form onSubmit={(e) => handleSubmit(e, formData, "register")} className="p-6">
+          <form
+            onSubmit={(e) => handleSubmit(e, formData, "register")}
+            className="p-6"
+          >
             <div className="space-y-4">
               {/* DNI Field - Linear on all screens */}
               <div className="space-y-2">
-                <label htmlFor="dni" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="dni"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   DNI
                 </label>
                 <div className="relative">
@@ -54,7 +91,10 @@ export default function AdminRegisterForm() {
               {/* Name and Last Name Fields - Side by side on desktop, stacked on mobile */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     Nombre
                   </label>
                   <div className="relative">
@@ -74,7 +114,10 @@ export default function AdminRegisterForm() {
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="lastName"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     Apellido
                   </label>
                   <div className="relative">
@@ -96,7 +139,10 @@ export default function AdminRegisterForm() {
 
               {/* Email Field - Linear on all screens */}
               <div className="space-y-2">
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Correo electrónico
                 </label>
                 <div className="relative">
@@ -117,7 +163,10 @@ export default function AdminRegisterForm() {
 
               {/* Password Field - Linear on all screens */}
               <div className="space-y-2">
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Contraseña
                 </label>
                 <div className="relative">
@@ -136,7 +185,9 @@ export default function AdminRegisterForm() {
                   <button
                     type="button"
                     className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500"
-                    onClick={() => togglePasswordVisibility(setShowPassword, showPassword)}
+                    onClick={() =>
+                      togglePasswordVisibility(setShowPassword, showPassword)
+                    }
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
@@ -156,5 +207,5 @@ export default function AdminRegisterForm() {
         </div>
       </div>
     </div>
-  )
+  );
 }

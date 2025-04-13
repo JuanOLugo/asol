@@ -4,7 +4,6 @@
   "description": "Asol System Back-end Developed by IDJA Softworks",
   "main": "intex.ts",
   "scripts": {
-    
     "dev": "nodemon src/infrestructure/server/index.ts"
   },
   "repository": {
@@ -25,6 +24,7 @@
     "@types/express": "^5.0.1",
     "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.9",
+    "@types/nodemailer": "^6.4.17",
     "@types/passport-jwt": "^4.0.1",
     "@types/passport-local": "^1.0.38",
     "@types/supertest": "^6.0.3",
@@ -43,6 +43,7 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.13.2",
+    "nodemailer": "^6.10.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0"

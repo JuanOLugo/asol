@@ -7,3 +7,4 @@ export const API_URL_Title = "http://localhost:3000/api/title";
 export const API_URL_Capacitation = "http://localhost:3000/api/capacitation";
 export const API_URL_Category = "http://localhost:3000/api/category";
 export const API_URL_Course = "http://localhost:3000/api/course";
+export const API_URL_Developer = "http://localhost:3000/api/developer";

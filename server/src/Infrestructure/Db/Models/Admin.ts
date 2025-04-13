@@ -4,8 +4,7 @@ import IAdmin from "../../../Domain/Interfaces/Db Interfaces/IAdmin";
 const AdminSchema = new Schema<IAdmin>({
   dni: {
     type: String,
-    required: true,
-    unique: true,
+    required: true
   },
   name: {
     type: String,

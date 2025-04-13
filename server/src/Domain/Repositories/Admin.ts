@@ -11,7 +11,7 @@ class AdminRepository {
       adminEntity.verifyPassword(admin.password) &&
       adminEntity.verifyEmail(admin.email)
     ) {
-      const VerifyAdmin = await AdminModel.findOne({ dni: admin.dni});
+      const VerifyAdmin = await AdminModel.findOne({ dni: admin.dni, enterprise: enterpriseId});
       if (VerifyAdmin) {
         throw new Error("El administrador ya existe");
       }
@@ -31,10 +31,11 @@ class AdminRepository {
     }
   }
 
-  public async LoginAdmin(dni: string, password: string) {
+  public async LoginAdmin(dni: string, password: string, enterpriseId: string) {
     const adminEntity = new AdminEntity();
+    console.log(enterpriseId)
     if (adminEntity.verifyPassword(password)) {
-      const admin = await AdminModel.findOne({ dni }).select("+password");
+      const admin = await AdminModel.findOne({ dni, enterprise: enterpriseId }).select("+password");
       if (!admin) {
         throw new Error("No se encontró el administrador");
       }
@@ -66,8 +67,8 @@ class AdminRepository {
     return await AdminModel.findByIdAndDelete(id);
   }
 
-  public async GetAdmin(id: string) {
-    return await AdminModel.findById(id);
+  public async GetAdmin(id: string, enterpriseId: string) {
+    return await AdminModel.findOne({ _id: id, enterprise: enterpriseId });
   }
 }
 

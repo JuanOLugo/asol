@@ -5,6 +5,10 @@ import AuthForm from "./Components/Auth/Authform/Authform";
 import AdminRegisterForm from "./Components/Enterprise/Admin/Views/AdminRegisterForm";
 import AdminLoginForm from "./Components/Enterprise/Admin/Views/AdminLoginForm";
 import AdminRoutes from "./Routes/AdminRoutes";
+import Dashboard from "./Components/Dashboard/Views/Dashboard";
+import CoursesPage from "./Components/Courses/Views/Course";
+import TrainersPage from "./Components/Capacitation/Views/Capacitation";
+import CatalogPage from "./Components/Catalog/Views/Catalog";
 function App() {
   return (
     <>
@@ -16,13 +20,15 @@ function App() {
             element={<h1>Information</h1>}
           />
           <Route path="/enterprise/adminlogin" element={<AdminLoginForm />} />
+          <Route path="/enterprise/create-admin" element={<AdminRegisterForm />} />
         </Route>
 
         <Route path="/admin" element={<AdminRoutes />}>
-          <Route path="/admin" element={<h1>Dashboard</h1>} />
+          <Route path="/admin" element={<Dashboard />} />
           <Route path="/admin/create-admin" element={<AdminRegisterForm />} />
-          <Route path="/admin/cursos" element={<h1>Cursos</h1>} />
-          <Route path="/admin/capacitadores" element={<h1>Capacitadores</h1>} />
+          <Route path="/admin/cursos" element={<CoursesPage />} />
+          <Route path="/admin/capacitadores" element={<TrainersPage />} />
+          <Route path="/admin/catalogo" element={<CatalogPage />} />
         </Route>
 
         <Route element={<PublicRoute />}>

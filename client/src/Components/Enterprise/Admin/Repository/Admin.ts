@@ -14,8 +14,8 @@ class AdminRepository {
     e.preventDefault();
     try {
         if(SubmitType === "register"){
-            const response = await AdminController.CreateAdmin(formData)
-            console.log(response)
+            await AdminController.CreateAdmin(formData)
+            window.location.href = "/admin"
         }else if(SubmitType === "login"){
             await AdminController.LoginAdmin(formData)
             window.location.href = "/admin"

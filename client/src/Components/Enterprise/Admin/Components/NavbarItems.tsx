@@ -19,6 +19,11 @@ const HrefNavbarItems = [
     icon: <Users size={20} />,
   },
   {
+    name: "Catalogo",
+    href: "/admin/catalogo",
+    icon: <BookOpen size={20} />,
+  },
+  {
     name: "Cerrar sesion ",
     icon: <LogOut size={20} />,
   },
