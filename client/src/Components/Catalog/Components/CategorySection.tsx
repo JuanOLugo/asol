@@ -1,44 +1,20 @@
-"use client"
+import { useState } from "react";
+import { Plus, Edit, Trash2, Check, X, Tag } from "lucide-react";
+import { CategorySectionProps } from "../Interfaces/Category";
+import CategoryRepository from "../Repository/Category";
+const categoryRepository = new CategoryRepository();
 
-import type React from "react"
-
-import { useState } from "react"
-import { Plus, Edit, Trash2, Check, X, Tag } from "lucide-react"
-import { Category, CategorySectionProps } from "../Interfaces/Category"
-
-
-
-
-export function CategorySection({ categories, onAdd, onUpdate, onDelete }: CategorySectionProps) {
-  const [newCategory, setNewCategory] = useState("")
-  const [editingId, setEditingId] = useState<number | null>(null)
-  const [editingName, setEditingName] = useState("")
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (newCategory.trim()) {
-      onAdd(newCategory.trim())
-      setNewCategory("")
-    }
-  }
-
-  const startEditing = (category: Category) => {
-    setEditingId(category.id)
-    setEditingName(category.name)
-  }
-
-  const cancelEditing = () => {
-    setEditingId(null)
-    setEditingName("")
-  }
-
-  const saveEditing = () => {
-    if (editingId !== null && editingName.trim()) {
-      onUpdate(editingId, editingName.trim())
-      setEditingId(null)
-      setEditingName("")
-    }
-  }
+export function CategorySection({
+  categories,
+  onAdd,
+  onUpdate,
+  onDelete,
+}: CategorySectionProps) {
+  const [newCategory, setNewCategory] = useState("");
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingName, setEditingName] = useState("");
+  const { handleSubmit, startEditing, cancelEditing, saveEditing } =
+    categoryRepository;
 
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
@@ -47,7 +23,10 @@ export function CategorySection({ categories, onAdd, onUpdate, onDelete }: Categ
       </div>
 
       {/* Add Category Form */}
-      <form onSubmit={handleSubmit} className="p-4 border-b">
+      <form
+        onSubmit={(e) => handleSubmit(e, newCategory, onAdd, setNewCategory)}
+        className="p-4 border-b"
+      >
         <div className="flex gap-2">
           <div className="relative flex-grow">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">
@@ -75,10 +54,15 @@ export function CategorySection({ categories, onAdd, onUpdate, onDelete }: Categ
       {/* Categories List */}
       <div className="divide-y divide-gray-200 max-h-[400px] overflow-y-auto">
         {categories.length === 0 ? (
-          <div className="p-6 text-center text-gray-500">No hay categorías registradas</div>
+          <div className="p-6 text-center text-gray-500">
+            No hay categorías registradas
+          </div>
         ) : (
           categories.map((category) => (
-            <div key={category.id} className="p-4 hover:bg-gray-50 transition-colors">
+            <div
+              key={category.id}
+              className="p-4 hover:bg-gray-50 transition-colors"
+            >
               {editingId === category.id ? (
                 <div className="flex items-center gap-2">
                   <input
@@ -89,14 +73,22 @@ export function CategorySection({ categories, onAdd, onUpdate, onDelete }: Categ
                     autoFocus
                   />
                   <button
-                    onClick={saveEditing}
+                    onClick={() =>
+                      saveEditing(
+                        setEditingId,
+                        setEditingName,
+                        onUpdate,
+                        editingId,
+                        editingName
+                      )
+                    }
                     className="p-1 text-green-600 hover:bg-green-100 rounded-full transition-colors"
                     aria-label="Guardar"
                   >
                     <Check size={18} />
                   </button>
                   <button
-                    onClick={cancelEditing}
+                    onClick={() => cancelEditing(setEditingId, setEditingName)}
                     className="p-1 text-red-600 hover:bg-red-100 rounded-full transition-colors"
                     aria-label="Cancelar"
                   >
@@ -108,7 +100,9 @@ export function CategorySection({ categories, onAdd, onUpdate, onDelete }: Categ
                   <span className="text-gray-800">{category.name}</span>
                   <div className="flex space-x-2">
                     <button
-                      onClick={() => startEditing(category)}
+                      onClick={() =>
+                        startEditing(category, setEditingId, setEditingName)
+                      }
                       className="p-1 text-blue-600 hover:bg-blue-100 rounded-full transition-colors"
                       aria-label="Editar"
                     >
@@ -129,5 +123,5 @@ export function CategorySection({ categories, onAdd, onUpdate, onDelete }: Categ
         )}
       </div>
     </div>
-  )
+  );
 }

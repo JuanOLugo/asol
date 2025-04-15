@@ -80,17 +80,15 @@ export function TrainerForm({
   };
 
   // Mock data for select options
-  const cargoOptions = ["Instructor", "Coordinador", "Supervisor", "Director"];
+  const cargoOptions = ["Auxiliar Operativo", "Montacarguista", "Supervisor", "Analista SST"];
   const categoriaOptions = [
-    "Tecnología",
-    "Marketing",
-    "Administración",
-    "Recursos Humanos",
-    "Diseño",
-    "Ventas",
+    "Area T1",
+    "Area Lineas",
+    "Materia Primas",
+    "Area de estibas"
   ];
   const capacitacionOptions = [
-    "Programación",
+    "Reparacion y clasificacion de estibas cerveceras",
     "Redes Sociales",
     "Gestión de Proyectos",
     "Liderazgo",

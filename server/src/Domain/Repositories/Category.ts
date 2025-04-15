@@ -1,8 +1,9 @@
+import mongoose from "mongoose";
 import CategoryModel from "../../Infrestructure/Db/Models/Category";
 import ICategory from "../Interfaces/Db Interfaces/ICategory";
 class CategoryRepository {
-  public async CreateCategory(category: ICategory): Promise<ICategory> {
-    const categoryCreating = await CategoryModel.create(category);
+  public async CreateCategory(category: ICategory, enterpriseId: string, adminId: string): Promise<ICategory> {
+    const categoryCreating = await CategoryModel.create({...category, enterprise: enterpriseId, Admin: new mongoose.Types.ObjectId(adminId)});
     const categoryCreated = await categoryCreating.save();
     return categoryCreated;
   }

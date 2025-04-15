@@ -1,7 +1,10 @@
 import { Position } from "../Interfaces/Position";
+import TitleController from "../Controllers/Title";
+import Cookies from "js-cookie";
+const titleController = new TitleController();
 
 class PositionRepository {
-  public handleSubmit = (
+  public handleSubmit = async (
     e: React.FormEvent,
     onAdd: (name: string) => void,
     newPosition: string,
@@ -9,8 +12,22 @@ class PositionRepository {
   ) => {
     e.preventDefault();
     if (newPosition.trim()) {
-      onAdd(newPosition.trim());
-      setNewPosition("");
+      
+      console.log(newPosition.trim());
+      const data = {
+        name: newPosition.trim(),
+        description: "",
+        adminId: Cookies.get("admin-token") || "",
+        createdAt: new Date().toLocaleDateString("es-CO"),
+      };
+      try {
+        const response = await titleController.CreateTitle(data);
+        console.log(response);
+        onAdd(newPosition.trim());
+        setNewPosition("");
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 

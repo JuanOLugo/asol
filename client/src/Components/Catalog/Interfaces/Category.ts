@@ -1,11 +1,11 @@
 export interface Category {
-  id: number;
+  id: string;
   name: string;
 }
 
 export interface CategorySectionProps {
   categories: Category[];
-  onAdd: (name: string) => void;
-  onUpdate: (id: number, name: string) => void;
-  onDelete: (id: number) => void;
+  onAdd: (name: string, id: string) => void;
+  onUpdate: (id: string, name: string) => void;
+  onDelete: (id: string) => void;
 }

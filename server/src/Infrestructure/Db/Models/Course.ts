@@ -5,6 +5,7 @@ const CourseSchema = new Schema<ICourse>({
   name: { type: String, required: true },
   description: { type: String, required: true },
   createAt: { type: String, default: new Date().toLocaleDateString("es-co"), required: true },
+  capacityType: { type: [String], required: true },
   enterprise: { type: Schema.Types.ObjectId, required: true, ref: "Enterprise" },
   Admin: { type: Schema.Types.ObjectId, required: true, ref: "Admin" },
   category: { type: Schema.Types.ObjectId, required: true, ref: "Category" },

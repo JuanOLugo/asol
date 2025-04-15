@@ -3,7 +3,7 @@ import { Plus, Edit, Trash2, Check, X, Briefcase } from "lucide-react"
 import { PositionSectionProps } from "../Interfaces/Position"
 import PositionRepository from "../Repository/Position"
 
-export function PositionSection({ positions, onAdd, onUpdate, onDelete }: PositionSectionProps) {
+export function CargoSection({ positions, onAdd, onUpdate, onDelete }: PositionSectionProps) {
   const { handleSubmit, startEditing, cancelEditing, saveEditing } = new PositionRepository();
   const [newPosition, setNewPosition] = useState("")
   const [editingId, setEditingId] = useState<number | null>(null)

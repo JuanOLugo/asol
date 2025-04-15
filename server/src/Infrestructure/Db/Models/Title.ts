@@ -8,7 +8,6 @@ const TitleSchema = new Schema<ITitle>({
   },
   description: {
     type: String,
-    required: true,
   },
   enterprise: {
     type: Schema.Types.ObjectId,

@@ -1,8 +1,17 @@
+import mongoose from "mongoose";
 import TitleModel from "../../Infrestructure/Db/Models/Title";
 import ITitle from "../Interfaces/Db Interfaces/ITitle";
 class TitleRepository {
-  public async CreateTitle(title: ITitle): Promise<ITitle> {
-    const titleCreating = await TitleModel.create(title);
+  public async CreateTitle(
+    title: ITitle,
+    enterpriseId: string,
+    adminId: string
+  ): Promise<ITitle> {
+    const titleCreating = await TitleModel.create({
+      ...title,
+      enterprise: enterpriseId,
+      Admin: new mongoose.Types.ObjectId(adminId),
+    });
     const titleCreated = await titleCreating.save();
     return titleCreated;
   }

@@ -1,11 +1,13 @@
 import { Request, Response } from "express";
 import CategoryRepository from "../../../Domain/Repositories/Category";
-
+import jwt from "jsonwebtoken";
 class CategoryController{
     public async CreateCategory(req:Request,res:Response):Promise<any>{
         const category = req.body;
+        const enterpriseId = (req.user as {_id: string})?._id;
+        const adminId: {id: string} = jwt.verify(req.body.adminId, process.env.JWT_SECRET || "secret") as {id: string};
         try {
-            const categoryCreated = await new CategoryRepository().CreateCategory(category);
+            const categoryCreated = await new CategoryRepository().CreateCategory(category, enterpriseId, adminId.id);
             res.status(201).json(categoryCreated);
         } catch (error:any) {
             res.status(400).json({message:error.message});

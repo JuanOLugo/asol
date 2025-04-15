@@ -3,96 +3,25 @@
 import { useState } from "react"
 import { CatalogHeader } from "../Components/CatalogHeader"
 import { CategorySection } from "../Components/CategorySection"
-import { CatalogList } from "../Components/CatalogList"
-import { PositionSection } from "../Components/PositionSection"
+import { CapacitationList } from "../Components/CapacitationList"
+import { CargoSection} from "../Components/CargoSection"
+import { Category } from "../Interfaces/Category"
+import { Training } from "../Interfaces/CatalogList"
+import { Position } from "../Interfaces/Position"
+import CatalogRepository from "../Repository/Catalog"
+const catalogRepository = new CatalogRepository();
 
-// Mock data
-const mockCategories = [
-  { id: 1, name: "Tecnología" },
-  { id: 2, name: "Marketing" },
-  { id: 3, name: "Administración" },
-  { id: 4, name: "Recursos Humanos" },
-  { id: 5, name: "Diseño" },
-  { id: 6, name: "Ventas" },
+// Define item types
+const Categories = [
+  { id: "1", name: "Capacitación" },
+  { id: "2", name: "Cargo" },
 ]
-
-const mockTrainings = [
-  { id: 1, name: "Programación" },
-  { id: 2, name: "Redes Sociales" },
-  { id: 3, name: "Gestión de Proyectos" },
-  { id: 4, name: "Liderazgo" },
-  { id: 5, name: "UX/UI" },
-  { id: 6, name: "Estrategia de Ventas" },
-]
-
-const mockPositions = [
-  { id: 1, name: "Instructor" },
-  { id: 2, name: "Coordinador" },
-  { id: 3, name: "Supervisor" },
-  { id: 4, name: "Director" },
-]
-
-// Define item type
-interface CatalogItem {
-  id: number
-  name: string
-}
 
 export default function CatalogPage() {
-  const [categories, setCategories] = useState<CatalogItem[]>(mockCategories)
-  const [trainings, setTrainings] = useState<CatalogItem[]>(mockTrainings)
-  const [positions, setPositions] = useState<CatalogItem[]>(mockPositions)
-
-  // Category handlers
-  const handleAddCategory = (name: string) => {
-    const newCategory = {
-      id: categories.length > 0 ? Math.max(...categories.map((c) => c.id)) + 1 : 1,
-      name,
-    }
-    setCategories([...categories, newCategory])
-  }
-
-  const handleUpdateCategory = (id: number, name: string) => {
-    setCategories(categories.map((category) => (category.id === id ? { ...category, name } : category)))
-  }
-
-  const handleDeleteCategory = (id: number) => {
-    setCategories(categories.filter((category) => category.id !== id))
-  }
-
-  // Training handlers
-  const handleAddTraining = (name: string) => {
-    const newTraining = {
-      id: trainings.length > 0 ? Math.max(...trainings.map((t) => t.id)) + 1 : 1,
-      name,
-    }
-    setTrainings([...trainings, newTraining])
-  }
-
-  const handleUpdateTraining = (id: number, name: string) => {
-    setTrainings(trainings.map((training) => (training.id === id ? { ...training, name } : training)))
-  }
-
-  const handleDeleteTraining = (id: number) => {
-    setTrainings(trainings.filter((training) => training.id !== id))
-  }
-
-  // Position handlers
-  const handleAddPosition = (name: string) => {
-    const newPosition = {
-      id: positions.length > 0 ? Math.max(...positions.map((p) => p.id)) + 1 : 1,
-      name,
-    }
-    setPositions([...positions, newPosition])
-  }
-
-  const handleUpdatePosition = (id: number, name: string) => {
-    setPositions(positions.map((position) => (position.id === id ? { ...position, name } : position)))
-  }
-
-  const handleDeletePosition = (id: number) => {
-    setPositions(positions.filter((position) => position.id !== id))
-  }
+  const [categories, setCategories] = useState<Category[]>(Categories)
+  const [trainings, setTrainings] = useState<Training[]>([])
+  const [positions, setPositions] = useState<Position[]>([])
+  const {handleAddCategory, handleUpdateCategory, handleDeleteCategory, handleAddTraining, handleUpdateTraining, handleDeleteTraining, handleAddPosition, handleUpdatePosition, handleDeletePosition} = catalogRepository
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -100,28 +29,29 @@ export default function CatalogPage() {
         <CatalogHeader />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Category Section */}
+          {/* Categoría Section */}
           <CategorySection
             categories={categories}
-            onAdd={handleAddCategory}
-            onUpdate={handleUpdateCategory}
-            onDelete={handleDeleteCategory}
+            onAdd={(name: string) => handleAddCategory(name, setCategories, categories)}
+            onUpdate={(id: string, name: string) => handleUpdateCategory(id, name, setCategories, categories, setTrainings, trainings)}
+            onDelete={(id: string) => handleDeleteCategory(id, setCategories, categories, setTrainings, trainings)}
           />
 
-          {/* Training Section */}
-          <CatalogList
+          {/* Capacitación Section */}
+          <CapacitationList
             trainings={trainings}
-            onAdd={handleAddTraining}
-            onUpdate={handleUpdateTraining}
-            onDelete={handleDeleteTraining}
+            categories={categories}
+            onAdd={(name: string, categoryId: string) => handleAddTraining(name, setTrainings, trainings, categories, categoryId) }
+            onUpdate={(id: number, name: string) => handleUpdateTraining(id, name, setTrainings, trainings)}
+            onDelete={(id: number) => handleDeleteTraining(id, setTrainings, trainings)}
           />
 
-          {/* Position Section */}
-          <PositionSection
+          {/* Cargo Section */}
+          <CargoSection
             positions={positions}
-            onAdd={handleAddPosition}
-            onUpdate={handleUpdatePosition}
-            onDelete={handleDeletePosition}
+            onAdd={(name: string) => handleAddPosition(name, setPositions, positions)}
+            onUpdate={(id: number, name: string) => handleUpdatePosition(id, name, setPositions, positions)}
+            onDelete={(id: number) => handleDeletePosition(id, setPositions, positions)}
           />
         </div>
       </div>

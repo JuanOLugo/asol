@@ -7,8 +7,7 @@ const CategorySchema = new Schema<ICategory>({
     required: true,
   },
   description: {
-    type: String,
-    required: true,
+    type: String
   },
   Admin: { type: Schema.Types.ObjectId, required: true, ref: "Admin" },
   enterprise: {
