@@ -14,6 +14,13 @@ export interface TrainersListProps {
   onDelete: (id: number) => void;
 }
 
+export interface Capacitation {
+  id: number;
+  name: string;
+  categoryId: number;
+  categoryName: string;
+}
+
 export interface TrainerFormProps {
   trainer: Trainer | null;
   isEditing: boolean;

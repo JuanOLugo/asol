@@ -17,6 +17,7 @@ import {
 import { TrainerFormProps } from "../Interface/Trainer";
 import { Trainer } from "../Views/Capacitation";
 import TrainerRepository from "../Repository/Trainer";
+import { MultipleCapacitationModal } from "./MultipleCapacitationModal";
 
 export function TrainerForm({
   trainer,
@@ -25,7 +26,6 @@ export function TrainerForm({
   onUpdate,
   onCancel,
 }: TrainerFormProps) {
-
   const { handleChange, handleSubmit } = new TrainerRepository();
   const [formData, setFormData] = useState<Omit<Trainer, "id" | "createAt">>({
     dni: "",
@@ -37,6 +37,20 @@ export function TrainerForm({
     categoria: "",
     capacitacion: "",
   });
+  const [selectedTrainings, setSelectedTrainings] = useState<string[]>([]);
+  const [OpenModal, setOpenModal] = useState(false);
+
+  const handleOpenTrainingModal = () => {
+    setOpenModal(true);
+  };
+
+  const capacitacionOptions = [
+    { id: "1", name: "Programación", categoryId: "1", categoryName: "Tecnología" },
+    { id: "2", name: "Redes Sociales", categoryId: "2", categoryName: "Marketing" },
+    { id: "3", name: "Gestión de Proyectos", categoryId: "3", categoryName: "Administración" },
+    { id: "4", name: "Liderazgo", categoryId: "4", categoryName: "Recursos Humanos" },
+    
+  ]
 
   // Update form data when trainer changes
   useEffect(() => {
@@ -80,23 +94,19 @@ export function TrainerForm({
   };
 
   // Mock data for select options
-  const cargoOptions = ["Auxiliar Operativo", "Montacarguista", "Supervisor", "Analista SST"];
+  const cargoOptions = [
+    "Auxiliar Operativo",
+    "Montacarguista",
+    "Supervisor",
+    "Analista SST",
+  ];
   const categoriaOptions = [
     "Area T1",
     "Area Lineas",
     "Materia Primas",
-    "Area de estibas"
-  ];
-  const capacitacionOptions = [
-    "Reparacion y clasificacion de estibas cerveceras",
-    "Redes Sociales",
-    "Gestión de Proyectos",
-    "Liderazgo",
-    "UX/UI",
-    "Estrategia de Ventas",
+    "Area de estibas",
   ];
 
-  
 
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
@@ -106,7 +116,12 @@ export function TrainerForm({
         </h2>
       </div>
 
-      <form onSubmit={(e) => handleSubmit(e, isEditing, trainer, formData, onUpdate, onAdd)} className="p-6">
+      <form
+        onSubmit={(e) =>
+          handleSubmit(e, isEditing, trainer, formData, onUpdate, onAdd)
+        }
+        className="p-6"
+      >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* DNI */}
           <div className="space-y-2">
@@ -328,52 +343,27 @@ export function TrainerForm({
           </div>
 
           {/* Capacitacion (Select) */}
-          <div className="space-y-2">
-            <label
-              htmlFor="capacitacion"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Capacitación
+          <div className="space-y-2 md:col-span-2">
+            <label className="block text-sm font-medium text-gray-700">
+              Capacitaciones
             </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">
-                <BookOpen size={18} />
-              </div>
-              <select
-                id="capacitacion"
-                name="capacitacion"
-                value={formData.capacitacion}
-                onChange={(e) => handleChange(e, setFormData)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none bg-white"
-                required
-              >
-                <option value="" disabled>
-                  Seleccionar capacitación
-                </option>
-                {capacitacionOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                <svg
-                  className="h-5 w-5 text-gray-400"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+            <div
+              onClick={handleOpenTrainingModal}
+              className="w-full px-4 py-2 border border-gray-300 rounded-md bg-white cursor-pointer hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <div className="flex items-center">
+                <BookOpen size={18} className="text-gray-500 mr-2" />
+                <span className="text-gray-500">
+                  {selectedTrainings.length > 0
+                    ? `${selectedTrainings.length} capacitaciones seleccionadas`
+                    : "Seleccionar capacitaciones..."}
+                </span>
               </div>
             </div>
           </div>
         </div>
+
+
 
         {/* Creation Date (Display only when editing) */}
         {isEditing && trainer && (
@@ -403,6 +393,18 @@ export function TrainerForm({
           )}
         </div>
       </form>
+
+      <MultipleCapacitationModal
+        isOpen={OpenModal}
+        onClose={() => setOpenModal(false)}
+        trainings={capacitacionOptions}
+        selectedTrainings={selectedTrainings}
+        onToggleTraining={(id) => setSelectedTrainings((prev) => [...prev, id])}
+        onConfirm={() => {
+          console.log("Confirmar capacitaciones seleccionadas");
+          setOpenModal(false);
+        }}
+      />
     </div>
   );
 }

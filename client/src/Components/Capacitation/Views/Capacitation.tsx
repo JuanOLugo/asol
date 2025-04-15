@@ -92,6 +92,19 @@ export default function TrainersPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [isEditing, setIsEditing] = useState(false)
 
+  const mockTrainings = [
+    { id: 1, name: "Programación", categoryId: 1, categoryName: "Tecnología" },
+    { id: 2, name: "Redes Sociales", categoryId: 2, categoryName: "Marketing" },
+    { id: 3, name: "Gestión de Proyectos", categoryId: 3, categoryName: "Administración" },
+    { id: 4, name: "Liderazgo", categoryId: 4, categoryName: "Recursos Humanos" },
+    { id: 5, name: "UX/UI", categoryId: 5, categoryName: "Diseño" },
+    { id: 6, name: "Estrategia de Ventas", categoryId: 6, categoryName: "Ventas" },
+    { id: 7, name: "Desarrollo Web", categoryId: 1, categoryName: "Tecnología" },
+    { id: 8, name: "Análisis de Datos", categoryId: 1, categoryName: "Tecnología" },
+    { id: 9, name: "Email Marketing", categoryId: 2, categoryName: "Marketing" },
+    { id: 10, name: "Gestión del Tiempo", categoryId: 3, categoryName: "Administración" },
+  ]
+
   // Filter trainers when search term changes
   useEffect(() => {
     if (searchTerm.trim() === "") {
