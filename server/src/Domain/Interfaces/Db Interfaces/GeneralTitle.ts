@@ -1,12 +1,11 @@
 import mongoose, { ObjectId } from "mongoose";
 
-interface ITitle {
+interface IGeneralTitle {
     name: string;
     description: string;
     createAt: string;
     Admin: mongoose.Types.ObjectId;
     enterprise: mongoose.Types.ObjectId;
-    category: mongoose.Types.ObjectId;
 }
 
-export default ITitle;
+export default IGeneralTitle;

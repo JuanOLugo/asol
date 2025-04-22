@@ -15,6 +15,7 @@ import CourseRouter from "../../Interfaces/Http/Routes/Couse";
 import passportConfig from "../../Infrestructure/Auth/Passport.config";
 import CategoryRouter from "../../Interfaces/Http/Routes/Category";
 import DeveloperRouter from "../../Interfaces/Http/Routes/Developer";
+import GeneralTitleRouter from "../../Interfaces/Http/Routes/GeneralTitle";
 
 // Server
 export const app = express();
@@ -27,7 +28,6 @@ app.use(
   })
 );
 app.use(express.json());
-
 app.use("/api/user", UserRouter);
 app.use("/api/admin", AdminRouter);
 app.use("/api/enterprise", EnterpriseRouter);
@@ -36,6 +36,7 @@ app.use("/api/capacitation", CapacitationRouter);
 app.use("/api/category", CategoryRouter);
 app.use("/api/course", CourseRouter);
 app.use("/api/developer", DeveloperRouter);
+app.use("/api/general-title", GeneralTitleRouter);
 
 // Passport config
 app.use(passportConfig.initialize());

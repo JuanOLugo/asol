@@ -3,7 +3,10 @@ import IAdmin from "../Interfaces/Db Interfaces/IAdmin";
 import AdminEntity from "../Entities/Admin";
 import bcrypt from "bcryptjs";
 import jsonwebtoken from "jsonwebtoken";
-
+import CapacitationModel from "../../Infrestructure/Db/Models/Capacitation";
+import CategoryModel from "../../Infrestructure/Db/Models/Category";
+import TitleModel from "../../Infrestructure/Db/Models/Title";
+import GeneralTitleModel from "../../Infrestructure/Db/Models/GeneralTitle";
 class AdminRepository {
   public async RegisterAdmin(admin: IAdmin, enterpriseId: string) {
     const adminEntity = new AdminEntity();
@@ -69,6 +72,19 @@ class AdminRepository {
 
   public async GetAdmin(id: string, enterpriseId: string) {
     return await AdminModel.findOne({ _id: id, enterprise: enterpriseId });
+  }
+
+  public async GetCatalog(enterpriseId: string) {
+    const catalog = await CapacitationModel.find({ enterprise: enterpriseId }).populate("category").populate("Admin");
+    const categories = await CategoryModel.find({ enterprise: enterpriseId }).populate("Admin");
+    const titles = await TitleModel.find({ enterprise: enterpriseId }).populate("Admin").populate("category");
+    const generalTitles = await GeneralTitleModel.find({ enterprise: enterpriseId }).populate("Admin");
+    return {
+      catalog,
+      categories,
+      titles,
+      generalTitles,
+    };
   }
 }
 

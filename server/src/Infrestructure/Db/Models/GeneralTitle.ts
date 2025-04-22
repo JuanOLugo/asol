@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
-import ITitle from "../../../Domain/Interfaces/Db Interfaces/ITitle";
+import IGeneralTitle from "../../../Domain/Interfaces/Db Interfaces/GeneralTitle";
 
-const TitleSchema = new Schema<ITitle>({
+const GeneralTitleSchema = new Schema<IGeneralTitle>({
   name: {
     type: String,
     required: true,
@@ -24,13 +24,9 @@ const TitleSchema = new Schema<ITitle>({
     default: new Date().toLocaleDateString("es-co"),
     required: true,
   },
-  category: {
-    type: Schema.Types.ObjectId,
-    required: true,
-    ref: "GeneralTitle",
-  },
+
 });
 
-const TitleModel = model<ITitle>("Title", TitleSchema);
+const GeneralTitleModel = model<IGeneralTitle>("GeneralTitle", GeneralTitleSchema);
 
-export default TitleModel;
+export default GeneralTitleModel;

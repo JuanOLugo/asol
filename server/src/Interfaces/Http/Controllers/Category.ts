@@ -25,10 +25,12 @@ class CategoryController{
     }
 
     public async UpdateCategory(req:Request,res:Response):Promise<any>{
-        const categoryId = req.params.categoryId;
+        const categoryId = req.body.categoryId;
         const category = req.body;
+        const enterpriseId = (req.user as {_id: string})?._id;
+        const adminId: {id: string} = (jwt.verify(req.body.adminId, process.env.JWT_SECRET || "secret") as {id: string});
         try {
-            const categoryUpdated = await new CategoryRepository().UpdateCategory(categoryId, category);
+            const categoryUpdated = await new CategoryRepository().UpdateCategory(categoryId, category, enterpriseId, adminId.id);
             res.status(200).json({msg:"Category updated successfully"});
         }catch(error:any){
             res.status(400).json({message:error.message});
@@ -37,8 +39,9 @@ class CategoryController{
 
     public async DeleteCategory(req:Request,res:Response):Promise<any>{
         const categoryId = req.params.categoryId;
+        const enterpriseId = (req.user as {_id: string})?._id;
         try {
-            await new CategoryRepository().DeleteCategory(categoryId);
+            await new CategoryRepository().DeleteCategory(categoryId, enterpriseId);
             res.status(200).json({msg:"Category deleted successfully"});
         }catch(error:any){
             res.status(400).json({message:error.message});

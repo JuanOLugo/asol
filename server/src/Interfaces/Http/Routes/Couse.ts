@@ -1,12 +1,14 @@
 import { Router } from "express";
 import passportConfig from "../../../Infrestructure/Auth/Passport.config";
 import CourseController from "../Controllers/Couse";
-
+import { uploadMulter } from "../../../Infrestructure/Files/Multer.cfg";
+import fileUpload from "express-fileupload";
 const CourseRouter = Router();
 
 CourseRouter.post(
   "/create",
   passportConfig.authenticate("jwt", { session: false }),
+  fileUpload(),
   new CourseController().createCourse
 );
 CourseRouter.put(

@@ -6,7 +6,7 @@ const CapacitationRouter = Router();
 
 CapacitationRouter.post("/create",passportConfig.authenticate("jwt",{session:false}), new CapacitationController().CreateCapacitation);
 CapacitationRouter.get("/all/:enterpriseId",passportConfig.authenticate("jwt",{session:false}), new CapacitationController().GetAllCapacitations);
-CapacitationRouter.put("/update/:capacitationId",passportConfig.authenticate("jwt",{session:false}), new CapacitationController().UpdateCapacitation);
+CapacitationRouter.post("/update",passportConfig.authenticate("jwt",{session:false}), new CapacitationController().UpdateCapacitation);
 CapacitationRouter.delete("/delete/:capacitationId",passportConfig.authenticate("jwt",{session:false}), new CapacitationController().DeleteCapacitation);
 CapacitationRouter.get("/:capacitationId",passportConfig.authenticate("jwt",{session:false}), new CapacitationController().GetCapacitationById);
 export default CapacitationRouter;

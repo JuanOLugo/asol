@@ -8,7 +8,6 @@ const CapacitationSchema = new Schema<ICapacitation>({
   },
   description: {
     type: String,
-    required: true,
   },
   Admin: {
     type: Schema.Types.ObjectId,

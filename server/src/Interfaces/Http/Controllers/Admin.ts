@@ -15,6 +15,17 @@ class AdminController {
     }
   }
 
+  public async GetCatalog(req: Request, res: Response) {
+    const adminRepository = new AdminRepository();
+    const enterpriseId = (req.user as { _id: string })?._id;
+    try {
+      const catalog = await adminRepository.GetCatalog(enterpriseId);
+      res.status(200).send(catalog);
+    }catch(error:any){
+      res.status(400).send({message:error.message});
+    }
+  }
+
   public async GetAdmin(req: Request, res: Response) {
     const adminRepository = new AdminRepository();
     const enterpriseId = (req.user as { _id: string })?._id;
