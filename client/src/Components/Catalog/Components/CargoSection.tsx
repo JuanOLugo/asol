@@ -1,15 +1,35 @@
-import { useState } from "react"
-import { Plus, Edit, Trash2, Check, X, Briefcase } from "lucide-react"
-import { PositionSectionProps } from "../Interfaces/Position"
-import PositionRepository from "../Repository/Position"
+import { useEffect, useState } from "react";
+import { Plus, Edit, Trash2, Check, X, Briefcase } from "lucide-react";
+import { Position, PositionSectionProps } from "../Interfaces/Position";
+import PositionRepository from "../Repository/Position";
+import { CargoSelectionModal } from "./CargoSelectionModal";
+import { GeneralTitle } from "../Interfaces/GeneralTitle";
 
-export function CargoSection({ positions, onAdd, onUpdate, onDelete }: PositionSectionProps) {
-  const { handleSubmit, startEditing, cancelEditing, saveEditing } = new PositionRepository();
-  const [newPosition, setNewPosition] = useState("")
-  const [editingId, setEditingId] = useState<number | null>(null)
-  const [editingName, setEditingName] = useState("")
+export function CargoSection({
+  cargosGenerales,
+  positions,
+  onAdd,
+  onUpdate,
+  onDelete,
+}: PositionSectionProps) {
+  const { handleSubmit, startEditing, cancelEditing, saveEditing } =
+    new PositionRepository();
+  const [newPosition, setNewPosition] = useState("");
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingName, setEditingName] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedCargoId, setSelectedCargoId] = useState<string | null>(null);
+  const [Positions, setPositions] = useState<Position[] | null>(null);
+  const [WhatToDo, setWhatToDo] = useState("create");
+  const [CargosGenerales, setCargosGenerales] =
+    useState<GeneralTitle[] | null>(null);
+  useEffect(() => {
+    setPositions(positions);
 
- 
+    setCargosGenerales(cargosGenerales);
+  }, [positions, cargosGenerales]);
+
+  if (!Positions || !CargosGenerales) return <div>Cargando...</div>
 
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
@@ -18,7 +38,13 @@ export function CargoSection({ positions, onAdd, onUpdate, onDelete }: PositionS
       </div>
 
       {/* Add Position Form */}
-      <form onSubmit={(e) => handleSubmit(e, onAdd, newPosition, setNewPosition)} className="p-4 border-b">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          setIsOpen(true);
+        }}
+        className="p-4 border-b"
+      >
         <div className="flex gap-2">
           <div className="relative flex-grow">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">
@@ -45,12 +71,17 @@ export function CargoSection({ positions, onAdd, onUpdate, onDelete }: PositionS
 
       {/* Positions List */}
       <div className="divide-y divide-gray-200 max-h-[400px] overflow-y-auto">
-        {positions.length === 0 ? (
-          <div className="p-6 text-center text-gray-500">No hay cargos registrados</div>
+        {Positions.length === 0 ? (
+          <div className="p-6 text-center text-gray-500">
+            No hay cargos registrados
+          </div>
         ) : (
-          positions.map((position) => (
-            <div key={position.id} className="p-4 hover:bg-gray-50 transition-colors">
-              {editingId === position.id ? (
+          Positions.map((position) => (
+            <div
+              key={position._id}
+              className="p-4 hover:bg-gray-50 transition-colors"
+            >
+              {editingId === position._id ? (
                 <div className="flex items-center gap-2">
                   <input
                     type="text"
@@ -60,7 +91,10 @@ export function CargoSection({ positions, onAdd, onUpdate, onDelete }: PositionS
                     autoFocus
                   />
                   <button
-                    onClick={() => saveEditing(setEditingId, setEditingName, onUpdate, editingId, editingName)}
+                    onClick={() => {
+                      setWhatToDo("update")
+                      setIsOpen(true)
+                    }}
                     className="p-1 text-green-600 hover:bg-green-100 rounded-full transition-colors"
                     aria-label="Guardar"
                   >
@@ -76,17 +110,27 @@ export function CargoSection({ positions, onAdd, onUpdate, onDelete }: PositionS
                 </div>
               ) : (
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-800">{position.name}</span>
+                  <div className="flex flex-col">
+                    <span className="text-gray-800">{position.name}</span>
+                    <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full w-fit">
+                      Cargo general:{" "}
+                      {position.category
+                        ? position.category.name
+                        : "Sin asignar"}
+                    </span>
+                  </div>
                   <div className="flex space-x-2">
                     <button
-                      onClick={() => startEditing(position, setEditingId, setEditingName  )}
+                      onClick={() =>
+                        startEditing(position, setEditingId, setEditingName)
+                      }
                       className="p-1 text-blue-600 hover:bg-blue-100 rounded-full transition-colors"
                       aria-label="Editar"
                     >
                       <Edit size={16} />
                     </button>
                     <button
-                      onClick={() => onDelete(position.id)}
+                      onClick={() => onDelete(position._id)}
                       className="p-1 text-red-600 hover:bg-red-100 rounded-full transition-colors"
                       aria-label="Eliminar"
                     >
@@ -99,6 +143,45 @@ export function CargoSection({ positions, onAdd, onUpdate, onDelete }: PositionS
           ))
         )}
       </div>
+
+      <CargoSelectionModal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        cargos={CargosGenerales}
+        selectedCargoId={selectedCargoId}
+        onSelectCargo={setSelectedCargoId}
+        onConfirm={() => {
+          if (WhatToDo === "create") {
+            handleSubmit(
+              onAdd,
+              newPosition,
+              setNewPosition,
+              selectedCargoId ?? ""
+            );
+          } else if (WhatToDo === "update") {
+
+            saveEditing(
+              onUpdate,
+              editingId ?? "",
+              editingName,
+              selectedCargoId ?? ""
+            )
+            handleSubmit(
+              onUpdate,
+              newPosition,
+              setNewPosition,
+              selectedCargoId ?? ""
+            );
+            
+          }
+          setWhatToDo("create");
+          setIsOpen(false);
+          setSelectedCargoId("");
+          setEditingId("");
+          setEditingName("");
+        }}
+        cargoName={newPosition}
+      />
     </div>
-  )
+  );
 }

@@ -39,13 +39,16 @@ app.use("/api/developer", DeveloperRouter);
 app.use("/api/general-title", GeneralTitleRouter);
 
 // Passport config
-app.use(passportConfig.initialize());
+app.use(passportConfig.initialize()); 
 
 // Static files
 app.use(express.static(path.join(__dirname, "public")));
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
+
+
+app.use('/archivos', express.static(path.join(__dirname + '../../../../public/Files')));
 
 // Start server
 const port = process.env.PORT || 3000;

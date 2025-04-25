@@ -1,66 +1,63 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { CoursesHeader } from "../Components/CoursesHeader"
-import { CourseSlider } from "../Components/CourseSlider"
-import { Course } from "../Interfaces/ICourse"
-import CourseRepository from "../Repository/Course"
+import { useEffect, useState } from "react";
+import { CoursesHeader } from "../Components/CoursesHeader";
+import { CourseSlider } from "../Components/CourseSlider";
+import { Course } from "../Interfaces/ICourse";
+import CourseRepository from "../Repository/Course";
+import CourseController from "../Controllers/Course";
 // Mock course data
-const mockCourses: Course[] = [
-  {
-    id: 1,
-    title: "Introducción a la Programación",
-    description: "Curso básico para aprender los fundamentos de la programación.",
-    type: "Tecnología",
-    questionCount: 25,
-  },
-  {
-    id: 2,
-    title: "Marketing Digital",
-    description: "Aprende estrategias efectivas para promocionar productos y servicios en línea.",
-    type: "Marketing",
-    questionCount: 30,
-  },
-  {
-    id: 3,
-    title: "Gestión de Proyectos",
-    description: "Metodologías y herramientas para la gestión eficiente de proyectos.",
-    type: "Administración",
-    questionCount: 20,
-  },
-  {
-    id: 4,
-    title: "Diseño UX/UI",
-    description: "Principios y prácticas para crear interfaces de usuario efectivas y atractivas.",
-    type: "Diseño",
-    questionCount: 35,
-  },
-  {
-    id: 5,
-    title: "Análisis de Datos",
-    description: "Técnicas para analizar e interpretar datos para la toma de decisiones.",
-    type: "Tecnología",
-    questionCount: 28,
-  },
-  {
-    id: 6,
-    title: "Liderazgo y Gestión de Equipos",
-    description: "Habilidades para liderar equipos y gestionar el talento humano.",
-    type: "Recursos Humanos",
-    questionCount: 22,
-  },
-]
 
+const { GetCourseInformation } = new CourseController();
 export default function CoursesPage() {
-  const [courses, setCourses] = useState(mockCourses)
+  const [courses, setCourses] = useState<Course[]>([]);
   const { handleDeleteCourse, handleEditCourse } = new CourseRepository();
+
+  useEffect(() => {
+    GetCourseInformation().then((res) => {
+      const response = res.workshops.map((e: any) => {
+        return {
+          ...e,
+          questions: res.questions.filter((q: any) => q.workshop._id === e._id),
+          course: res.courses.find((c: any) => c._id === e.course._id),
+        };
+      });
+      const organizeSection = response.map((c: any) => {
+        return {
+          course: {...c.course, questions: c.questions},
+        };
+      });
+
+      console.log(organizeSection)
+
+      setCourses(
+        organizeSection
+          .map((c: any) => c.course)
+          .map((c: any) => {
+            return {
+              ...c,
+              capacityType: c.capacityType[0],
+              
+            };
+          })
+      );
+    });
+  }, []);
+
+  useEffect(() => {
+    console.log(courses);
+  }, [courses]);
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto space-y-8">
         <CoursesHeader />
-        <CourseSlider courses={courses} onDelete={(id) => handleDeleteCourse(id, setCourses, courses)} onEdit={(id) => handleEditCourse(id)} />
+        <CourseSlider
+          courses={courses}
+          onDelete={(id) => handleDeleteCourse(id, setCourses, courses)}
+          onEdit={(id) => handleEditCourse(id)}
+        />
       </div>
     </div>
-  )
+  );
 }

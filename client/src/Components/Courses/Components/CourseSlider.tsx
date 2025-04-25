@@ -65,24 +65,24 @@ export function CourseSlider({ courses, onDelete, onEdit }: CourseSliderProps) {
         </div>
       </div>
 
-      <div className="relative overflow-hidden">
+      <div className="relative overflow-hidden ">
         <div
           ref={sliderRef}
-          className="flex transition-transform duration-300 ease-in-out"
+          className="flex transition-transform duration-300 ease-in-out w-full"
           style={{
             transform: `translateX(-${currentIndex * (100 / cardsPerView)}%)`,
           }}
         >
           {courses.map((course) => (
             <div
-              key={course.id}
+              key={course._id}
               className="flex-shrink-0 px-2"
               style={{ width: `${100 / cardsPerView}%` }}
             >
               <CourseCard
                 course={course}
-                onDelete={() => onDelete(course.id)}
-                onEdit={() => onEdit(course.id)}
+                onDelete={() => onDelete(course._id)}
+                onEdit={() => onEdit(course._id)}
               />
             </div>
           ))}

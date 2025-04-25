@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus, Edit, Trash2, Check, X, BookOpen } from "lucide-react";
 import { TrainingSectionProps } from "../Interfaces/CatalogList";
 import CatalogListRepository from "../Repository/CatalogList";
@@ -12,13 +12,19 @@ export function CapacitationList({
   categories,
 }: TrainingSectionProps) {
   const [newTraining, setNewTraining] = useState("");
-  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
   const [Categories, setCategories] = useState(categories);
   const [OpenModal, setOpenModal] = useState(false);
   const { startEditing, cancelEditing, saveEditing, handleSubmit } =
     catalogListRepository;
   const [IndividualCategory, setIndividualCategory] = useState<string>("");
+  const [WhatToDo, setWhatToDo] = useState("create");
+  useEffect(() => {
+    setCategories(categories);
+  }, [categories]);
+
+  if (!Categories || !trainings) return <div>Cargando...</div>;
 
   return (
     <>
@@ -35,14 +41,33 @@ export function CapacitationList({
           selectedCategoryId={IndividualCategory || null}
           onSelectCategory={setIndividualCategory}
           onConfirm={() => {
-            handleSubmit(
-              setOpenModal,
-              setIndividualCategory,
-              onAdd,
-              setNewTraining,
-              newTraining,
-              IndividualCategory
-            );
+            if (WhatToDo === "create") {
+              handleSubmit(
+                setOpenModal,
+                setIndividualCategory,
+                onAdd,
+                setNewTraining,
+                newTraining,
+                IndividualCategory
+              );
+            } else if (WhatToDo === "update") {
+              saveEditing(
+                onUpdate,
+                editingId ?? "",
+                editingName,
+                setEditingId,
+                setEditingName,
+                IndividualCategory ?? ""
+              );
+            }
+
+            
+            setWhatToDo("create");
+            setOpenModal(false);
+            setIndividualCategory("");
+            setEditingId("");
+            setEditingName("");
+
           }}
           trainingName={newTraining}
         />
@@ -87,10 +112,10 @@ export function CapacitationList({
           ) : (
             trainings.map((training) => (
               <div
-                key={training.id}
+                key={training._id}
                 className="p-4 hover:bg-gray-50 transition-colors"
               >
-                {editingId === training.id ? (
+                {editingId === training._id ? (
                   <div className="flex items-center gap-2">
                     <input
                       type="text"
@@ -100,15 +125,10 @@ export function CapacitationList({
                       autoFocus
                     />
                     <button
-                      onClick={() =>
-                        saveEditing(
-                          onUpdate,
-                          editingId,
-                          editingName,
-                          setEditingId,
-                          setEditingName
-                        )
-                      }
+                      onClick={() => {
+                        setWhatToDo("update")
+                        setOpenModal(true)
+                      }}
                       className="p-1 text-green-600 hover:bg-green-100 rounded-full transition-colors"
                       aria-label="Guardar"
                     >
@@ -139,7 +159,7 @@ export function CapacitationList({
                           <Edit size={16} />
                         </button>
                         <button
-                          onClick={() => onDelete(training.id)}
+                          onClick={() => onDelete(training._id)}
                           className="p-1 text-red-600 hover:bg-red-100 rounded-full transition-colors"
                           aria-label="Eliminar"
                         >

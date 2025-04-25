@@ -1,5 +1,6 @@
 import { PlusCircle } from "lucide-react"
 import { formattedDate } from "../../../Config/Utils/Date"
+import { NavLink } from "react-router-dom"
 
 export function CoursesHeader() {
   return (
@@ -10,7 +11,7 @@ export function CoursesHeader() {
       </div>
       <button className="mt-4 md:mt-0 flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
         <PlusCircle size={18} />
-        <span>Crear Curso</span>
+        <NavLink to="/admin/cursos/create">Crear Curso</NavLink>
       </button>
     </div>
   )

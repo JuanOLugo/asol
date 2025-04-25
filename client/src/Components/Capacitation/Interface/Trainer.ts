@@ -15,6 +15,7 @@ export interface TrainersListProps {
 }
 
 export interface Capacitation {
+  _id?: string
   id: number;
   name: string;
   categoryId: number;

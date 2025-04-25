@@ -5,26 +5,24 @@ const titleController = new TitleController();
 
 class PositionRepository {
   public handleSubmit = async (
-    e: React.FormEvent,
-    onAdd: (name: string) => void,
+    onAdd: (name: string, id: string, adminName: string, adminLastName: string, categoryName: string, categoryId: string) => void,
     newPosition: string,
-    setNewPosition: React.Dispatch<React.SetStateAction<string>>
+    setNewPosition: React.Dispatch<React.SetStateAction<string>>,
+    cargoGeneralId: string
   ) => {
-    e.preventDefault();
     if (newPosition.trim()) {
-      
-      console.log(newPosition.trim());
       const data = {
         name: newPosition.trim(),
         description: "",
         adminId: Cookies.get("admin-token") || "",
         createdAt: new Date().toLocaleDateString("es-CO"),
+        cargoGeneralId: cargoGeneralId,
       };
       try {
         const response = await titleController.CreateTitle(data);
-        console.log(response);
-        onAdd(newPosition.trim());
+        onAdd(newPosition.trim(), response._id, response.Admin.name, response.Admin.lastName, response.category.name, response.category._id);
         setNewPosition("");
+
       } catch (error) {
         console.log(error);
       }
@@ -33,15 +31,15 @@ class PositionRepository {
 
   public startEditing = (
     position: Position,
-    setEditingId: React.Dispatch<React.SetStateAction<number | null>>,
+    setEditingId: React.Dispatch<React.SetStateAction<string | null>>,
     setEditingName: React.Dispatch<React.SetStateAction<string>>
   ) => {
-    setEditingId(position.id);
+    setEditingId(position._id);
     setEditingName(position.name);
   };
 
   public cancelEditing = (
-    setEditingId: React.Dispatch<React.SetStateAction<number | null>>,
+    setEditingId: React.Dispatch<React.SetStateAction<string | null>>,
     setEditingName: React.Dispatch<React.SetStateAction<string>>
   ) => {
     setEditingId(null);
@@ -49,16 +47,13 @@ class PositionRepository {
   };
 
   public saveEditing = (
-    setEditingId: React.Dispatch<React.SetStateAction<number | null>>,
-    setEditingName: React.Dispatch<React.SetStateAction<string>>,
-    onUpdate: (id: number, name: string) => void,
-    editingId: number,
-    editingName: string
+    onUpdate: (id: string, name: string, categoryId: string) => void,
+    editingId: string,
+    editingName: string,
+    categoryId: string
   ) => {
     if (editingId !== null && editingName.trim()) {
-      onUpdate(editingId, editingName.trim());
-      setEditingId(null);
-      setEditingName("");
+      onUpdate(editingId, editingName.trim(), categoryId);
     }
   };
 }

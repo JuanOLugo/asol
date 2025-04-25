@@ -44,7 +44,7 @@ function NavbarItems({
           {
             if (item.href) {
               return (
-                <li>
+                <li key={i}>
                   <Link
                     to={item.href}
                     onClick={() => handleMenuClick(item.name)}

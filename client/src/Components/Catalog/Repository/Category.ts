@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 const categoryController = new CategoryController();
 class CategoryRepository {
     
-  public handleSubmit = async (e: React.FormEvent, newCategory: String, onAdd: (name: string, id: string) => void, setNewCategory: React.Dispatch<React.SetStateAction<string>>) => {
+  public handleSubmit = async (e: React.FormEvent, newCategory: String, onAdd: (name: string, id: string, adminName: string, adminLastName: string) => void, setNewCategory: React.Dispatch<React.SetStateAction<string>>) => {
     e.preventDefault()
     if (newCategory.trim()) {
       const data = {
@@ -16,10 +16,9 @@ class CategoryRepository {
       }
       try {
         const response = await categoryController.CreateCategory(data);
-        console.log(response)
-        onAdd(newCategory.trim(), response._id)
+
+        onAdd(newCategory.trim(), response._id, response.Admin.name, response.Admin.lastName)
         setNewCategory("")
-        console.log(response)
       } catch (error) {
         console.log(error)
       }
@@ -28,7 +27,7 @@ class CategoryRepository {
   }
 
   public startEditing = (category: Category, setEditingId: React.Dispatch<React.SetStateAction<string | null>>, setEditingName: React.Dispatch<React.SetStateAction<string>>) => {
-    setEditingId(category.id)
+    setEditingId(category._id)
     setEditingName(category.name)
   }
 

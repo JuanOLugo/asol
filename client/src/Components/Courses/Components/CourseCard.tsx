@@ -3,21 +3,25 @@
 import { Edit, Trash2, BookOpen, HelpCircle } from "lucide-react"
 import { CourseCardProps } from "../Interfaces/ICourse"
 
-export function CourseCard({ course, onDelete, onEdit }: CourseCardProps) {
+export function CourseCard({ course, onDelete, onEdit}: CourseCardProps) {
   return (
     <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden h-full flex flex-col transition-transform hover:shadow-md hover:-translate-y-1">
       <div className="p-5 flex-grow">
-        <h3 className="text-lg font-bold text-gray-800 mb-2 line-clamp-1">{course.title}</h3>
+        <h3 className="text-lg font-bold text-gray-800 mb-2 line-clamp-1">{course.name}</h3>
         <p className="text-gray-600 mb-4 text-sm line-clamp-3">{course.description}</p>
 
-        <div className="flex items-center gap-2 mb-2">
+        <div className="flex items-center gap-2 ">
           <BookOpen size={16} className="text-blue-600" />
-          <span className="text-sm text-gray-700">Tipo: {course.type}</span>
+          <span className="text-sm text-gray-700">Tipo: {course.capacityType.name}</span>
         </div>
 
+        <div className="flex items-center gap-2 my-2">
+          <HelpCircle size={16} className="text-blue-600" />
+          <span className="text-sm text-gray-700">Preguntas: {course.questions.length}</span>
+        </div>
         <div className="flex items-center gap-2">
           <HelpCircle size={16} className="text-blue-600" />
-          <span className="text-sm text-gray-700">Preguntas: {course.questionCount}</span>
+          <span className="text-sm text-gray-700">Capacitador: {course.Admin.name} {course.Admin.lastName}</span>
         </div>
       </div>
 

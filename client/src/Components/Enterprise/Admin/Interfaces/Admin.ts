@@ -5,9 +5,9 @@ interface IAdmin {
     name: string;
     lastName: string;
     email: string;
-    password: string;
+    password?: string;
     createAt: string;
-    enterprise: IEnterprise
+    enterprise?: IEnterprise
 }
 
 export default IAdmin;

@@ -21,15 +21,17 @@ CourseRouter.delete(
   passportConfig.authenticate("jwt", { session: false }),
   new CourseController().deleteCourse
 );
+
 CourseRouter.get(
-  "/:id",
-  passportConfig.authenticate("jwt", { session: false }),
-  new CourseController().getCourseById
-);
-CourseRouter.get(
-  "/all/:enterpriseId",
+  "/all",
   passportConfig.authenticate("jwt", { session: false }),
   new CourseController().getAllCourses
+);
+
+CourseRouter.get(
+  "/individualcourse/:id",
+  passportConfig.authenticate("jwt", { session: false }),
+  new CourseController().getCourseById
 );
 
 export default CourseRouter;

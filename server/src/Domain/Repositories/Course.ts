@@ -1,4 +1,6 @@
 import CourseModel from "../../Infrestructure/Db/Models/Course";
+import WorkshopModel from "../../Infrestructure/Db/Models/Workshop";
+import WorkshopQuestionsModel from "../../Infrestructure/Db/Models/WorkshopQuestions";
 import ICourse from "../Interfaces/Db Interfaces/ICourse";
 class CourseRepository {
     public async createCourse(course: ICourse): Promise<ICourse> {
@@ -13,10 +15,12 @@ class CourseRepository {
         return course;
     }
 
-    public async getAllCourses(enterpriseId: string): Promise<ICourse[]> {
-        const courses = await CourseModel.find({ enterprise: enterpriseId });
-        if (!courses) throw new Error("No hay cursos");
-        return courses;
+    public async getAllCourses(enterpriseId: string): Promise<any> {
+        const courses = await CourseModel.find({ enterprise: enterpriseId }).populate("category").populate("capacityType").populate("Admin")
+        const workshops = await WorkshopModel.find({enterprise: enterpriseId}).populate("course").populate("Admin")
+        const questions = await WorkshopQuestionsModel.find({enterprise: enterpriseId}).populate("answers").populate("correctAnswer").populate("Admin").populate("workshop")
+        if (!courses || !workshops || !questions) throw new Error("Error al obetener datos");
+        return {courses, workshops, questions};
     }
     
     public async updateCourse(id: string, course: ICourse): Promise<ICourse> {

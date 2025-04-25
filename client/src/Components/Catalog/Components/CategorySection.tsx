@@ -60,10 +60,10 @@ export function CategorySection({
         ) : (
           categories.map((category) => (
             <div
-              key={category.id}
+              key={category._id}
               className="p-4 hover:bg-gray-50 transition-colors"
             >
-              {editingId === category.id ? (
+              {editingId === category._id ? (
                 <div className="flex items-center gap-2">
                   <input
                     type="text"
@@ -97,7 +97,15 @@ export function CategorySection({
                 </div>
               ) : (
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-800">{category.name}</span>
+                  <div className="flex flex-col">
+                    <span className="text-gray-800">{category.name}</span>
+                    <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full w-fit">
+                      Admin:{" "}
+                      {category.Admin.name
+                        ? category.Admin.name + " " + category.Admin.lastName
+                        : "Sin asignar"}
+                    </span>
+                  </div>
                   <div className="flex space-x-2">
                     <button
                       onClick={() =>
@@ -109,7 +117,7 @@ export function CategorySection({
                       <Edit size={16} />
                     </button>
                     <button
-                      onClick={() => onDelete(category.id)}
+                      onClick={() => onDelete(category._id)}
                       className="p-1 text-red-600 hover:bg-red-100 rounded-full transition-colors"
                       aria-label="Eliminar"
                     >

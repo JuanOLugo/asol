@@ -23,6 +23,7 @@ export function CategorySelectionModal({
   onConfirm,
   trainingName,
 }: CategorySelectionModalProps) {
+
   if (!isOpen) return null
 
   return (
@@ -51,12 +52,12 @@ export function CategorySelectionModal({
           ) : (
             <div className="max-h-[300px] overflow-y-auto divide-y divide-gray-200">
               {categories.map((category) => {
-                const isSelected = selectedCategoryId === category.id
-                const isDisabled = selectedCategoryId !== null && !isSelected
+                let isSelected = selectedCategoryId === category._id
+                let isDisabled = selectedCategoryId !== null && !isSelected
 
                 return (
                   <div
-                    key={category.id}
+                    key={category._id}
                     className={`p-3 ${
                       isSelected
                         ? "bg-green-50"
@@ -71,14 +72,21 @@ export function CategorySelectionModal({
                         <span className="text-gray-800">{category.name}</span>
                       </div>
                       <button
-                        onClick={() => onSelectCategory(category.id)}
+                        onClick={() => {
+                         if(!isSelected){
+                          onSelectCategory(category._id);
+                         }else{
+                          onSelectCategory("");
+                          isDisabled = false;
+                         }
+                        }}
                         disabled={isDisabled}
                         className={`px-3 py-1 rounded-md text-sm ${
                           isSelected
-                            ? "bg-green-600 text-white"
+                            ? "bg-green-600 text-white "
                             : isDisabled
-                              ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                              ? "bg-gray-200 text-gray-500 cursor-not-allowed "
+                              : "bg-gray-200 text-gray-700 hover:bg-gray-300 "
                         }`}
                       >
                         {isSelected ? (

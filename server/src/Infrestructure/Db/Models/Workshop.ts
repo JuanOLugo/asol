@@ -5,7 +5,7 @@ const WorkshopSchema = new Schema<IWorkshop>({
   title: { type: String, required: true },
   description: { type: String, required: true },
   createAt: { type: String, default: new Date().toLocaleDateString("es-co"), required: true },
-  finishAt: { type: String, required: true, },
+  finishAt: { type: String, required: false, },
   enterprise: { type: Schema.Types.ObjectId, required: true, ref: "Enterprise" },
   Admin: { type: Schema.Types.ObjectId, required: true, ref: "Admin" },
   course: { type: Schema.Types.ObjectId, required: true, ref: "Course" },

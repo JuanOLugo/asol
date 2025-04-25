@@ -2,7 +2,7 @@ import { Course } from "../Interfaces/ICourse";
 
 class CourseRepository {
     public handleDeleteCourse = (id: number, setCourses: React.Dispatch<React.SetStateAction<Course[]>>, courses: Course[]) => {
-        setCourses(courses.filter((course) => course.id !== id))
+        setCourses(courses.filter((course) => course._id !== id))
       }
     
       public handleEditCourse = (id: number) => {
