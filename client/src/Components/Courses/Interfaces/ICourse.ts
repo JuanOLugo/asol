@@ -14,7 +14,7 @@ interface QuestionResponse {
 }
 
 export interface Course {
-  _id: number;
+  _id: string;
   name: string;
   description: string;
   category: Category;
@@ -56,6 +56,6 @@ export interface CourseCardProps {
 
 export interface CourseSliderProps {
   courses: Course[];
-  onDelete: (id: number) => void;
-  onEdit: (id: number) => void;
+  onDelete: (id: string) => void;
+  onEdit: (id: string) => void;
 }

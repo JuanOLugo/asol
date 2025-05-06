@@ -7,6 +7,7 @@ import TitleController from "../Controllers/Title";
 import CapacitationControllers from "../Controllers/Capacitation";
 import GeneralTitleController from "../Controllers/GeneralCargos";
 import { GeneralTitle } from "../Interfaces/GeneralTitle";
+import { swalWithBootstrapButtons } from "../../../Config/SwalConfig";
 const categoryController = new CategoryController();
 const titleController = new TitleController();
 const capacitationController = new CapacitationControllers();
@@ -80,18 +81,42 @@ class CatalogRepository {
     trainings: Training[] | null
   ) => {
     if (!categories || !trainings) return;
-    setCategories(categories.filter((category) => category._id !== id));
+    
 
     // Remove category from trainings or handle as needed
     try {
-      await categoryController.DeleteCategory(id);
-      setTrainings(
-        trainings.map((training) =>
-          training.categoryId === id
-            ? { ...training, categoryId: undefined, categoryName: undefined }
-            : training
-        )
-      );
+      swalWithBootstrapButtons
+        .fire({
+          title: "Estas seguro de eliminar",
+          text: "No puedes volver a regresarla!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Si!",
+          cancelButtonText: "No, cancelar!",
+          reverseButtons: true,
+        })
+        .then(async (result: any) => {
+          if (result.isConfirmed) {
+            setCategories(categories.filter((category) => category._id !== id));
+            await categoryController.DeleteCategory(id);
+            setTrainings(
+              trainings.map((training) =>
+                training.categoryId === id
+                  ? {
+                      ...training,
+                      categoryId: undefined,
+                      categoryName: undefined,
+                    }
+                  : training
+              )
+            );
+            swalWithBootstrapButtons.fire({
+              title: "Eliminado!",
+              text: "eliminado correctamente",
+              icon: "success",
+            });
+          }
+        });
     } catch (error) {
       console.log(error);
     }
@@ -104,12 +129,12 @@ class CatalogRepository {
     trainings: Training[],
     categories: Category[],
     categoryId: string,
-    id: string,
+    id: string
   ) => {
     if (!categories || !trainings || !categoryId || !id) return;
     const category = categories.find((c) => c._id === categoryId);
     const newTraining = {
-      _id:id,
+      _id: id,
       name,
       categoryId,
       categoryName: category?.name,
@@ -118,7 +143,7 @@ class CatalogRepository {
   };
 
   public handleUpdateTraining = async (
-    id:string,
+    id: string,
     name: string,
     setTrainings: React.Dispatch<React.SetStateAction<Training[] | null>>,
     trainings: Training[] | null,
@@ -131,16 +156,21 @@ class CatalogRepository {
       name,
       description: "",
       adminId: Cookies.get("admin-token") || "",
-      categoryId
-    }
+      categoryId,
+    };
 
     try {
-      const response = await capacitationController.UpdateCapacitation(data).then(res => res.capacitationUpdated).catch(err => console.log(err));
-      if(!response) return;
+      const response = await capacitationController
+        .UpdateCapacitation(data)
+        .then((res) => res.capacitationUpdated)
+        .catch((err) => console.log(err));
+      if (!response) return;
       console.log(response.category.name);
       setTrainings(
         trainings.map((training) =>
-          training._id === response._id ? { ...training, ...response } : training
+          training._id === response._id
+            ? { ...training, ...response }
+            : training
         )
       );
     } catch (error) {
@@ -149,14 +179,33 @@ class CatalogRepository {
   };
 
   public handleDeleteTraining = async (
-    id:string,
+    id: string,
     setTrainings: React.Dispatch<React.SetStateAction<Training[] | null>>,
     trainings: Training[] | null
   ) => {
     if (!trainings) return;
     try {
-      await capacitationController.DeleteCapacitation(id);
-      setTrainings(trainings.filter((training) => training._id !== id));
+      swalWithBootstrapButtons
+        .fire({
+          title: "Estas seguro de eliminar",
+          text: "No puedes volver a regresarla!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Si!",
+          cancelButtonText: "No, cancelar!",
+          reverseButtons: true,
+        })
+        .then(async (result: any) => {
+          if (result.isConfirmed) {
+            await capacitationController.DeleteCapacitation(id);
+            setTrainings(trainings.filter((training) => training._id !== id));
+            swalWithBootstrapButtons.fire({
+              title: "Eliminado!",
+              text: "eliminado correctamente",
+              icon: "success",
+            });
+          }
+        });
     } catch (error) {
       console.log(error);
     }
@@ -166,7 +215,12 @@ class CatalogRepository {
   public handleAddPosition = async (
     setPositions: React.Dispatch<React.SetStateAction<Position[] | null>>,
     positions: Position[] | null,
-    name: string, id: string, adminName: string, adminLastName: string, categoryName: string, categoryId: string
+    name: string,
+    id: string,
+    adminName: string,
+    adminLastName: string,
+    categoryName: string,
+    categoryId: string
   ) => {
     if (!positions) return;
     const data = {
@@ -201,20 +255,27 @@ class CatalogRepository {
       name,
       description: "",
       adminId: Cookies.get("admin-token") || "",
-      categoryId
+      categoryId,
     };
     try {
       const response = await titleController.UpdateTitle(data);
       setPositions(
         positions.map((position) =>
-          position._id === id ? { ...position, name: response.name, category: {_id: response.category._id, name: response.category.name} } : position
+          position._id === id
+            ? {
+                ...position,
+                name: response.name,
+                category: {
+                  _id: response.category._id,
+                  name: response.category.name,
+                },
+              }
+            : position
         )
       );
-
     } catch (error) {
       console.log(error);
     }
-
   };
 
   public handleDeletePosition = async (
@@ -223,78 +284,122 @@ class CatalogRepository {
     positions: Position[] | null
   ) => {
     if (!positions) return;
-    
+
     try {
-      await titleController.DeleteTitle({id});
-      setPositions(positions.filter((position) => position._id !== id));
+      swalWithBootstrapButtons
+        .fire({
+          title: "Estas seguro de eliminar",
+          text: "No puedes volver a regresarla!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Si!",
+          cancelButtonText: "No, cancelar!",
+          reverseButtons: true,
+        })
+        .then(async (result: any) => {
+          if (result.isConfirmed) {
+            await titleController.DeleteTitle({ id });
+            setPositions(positions.filter((position) => position._id !== id));
+            swalWithBootstrapButtons.fire({
+              title: "Eliminado!",
+              text: "eliminado correctamente",
+              icon: "success",
+            });
+          }
+        });
     } catch (error) {
       console.log(error);
     }
   };
 
-    // General Title handlers
-    public handleAddGeneralTitle = async (
-      name: string,
-      setGeneralTitles: React.Dispatch<React.SetStateAction<GeneralTitle[] | null>>,
-      generalTitles: GeneralTitle[] | null,
-      id: string,
-      adminName: string,
-      adminLastName: string,
-    ) => {
-      if (!generalTitles) return;
-      const newGeneralTitle = {
-        _id:
-          id,
-        name,
-        Admin: {
-          name: adminName,
-          lastName: adminLastName,
-        }
-      };
-      setGeneralTitles([...generalTitles, newGeneralTitle]);
+  // General Title handlers
+  public handleAddGeneralTitle = async (
+    name: string,
+    setGeneralTitles: React.Dispatch<
+      React.SetStateAction<GeneralTitle[] | null>
+    >,
+    generalTitles: GeneralTitle[] | null,
+    id: string,
+    adminName: string,
+    adminLastName: string
+  ) => {
+    if (!generalTitles) return;
+    const newGeneralTitle = {
+      _id: id,
+      name,
+      Admin: {
+        name: adminName,
+        lastName: adminLastName,
+      },
     };
-  
-    public handleUpdateGeneralTitle = async (
-      id: string,
-      name: string,
-      setGeneralTitles: React.Dispatch<React.SetStateAction<GeneralTitle[] | null>>,
-      generalTitles: GeneralTitle[] | null
-    ) => {
-      if (!generalTitles) return;
-      const data = {
-        id,
-        name,
-        description: "",
-        adminId: Cookies.get("admin-token") || "",
-      };
-      try {
-        const response = await generalTitleController.UpdateTitle(data);
-        setGeneralTitles(
-          generalTitles.map((generalTitle) =>
-            generalTitle._id === id ? { ...generalTitle, name } : generalTitle
-          )
-        );
-        console.log(response);
-      } catch (error) {
-        console.log(error);
-      }
-  
+    setGeneralTitles([...generalTitles, newGeneralTitle]);
+  };
+
+  public handleUpdateGeneralTitle = async (
+    id: string,
+    name: string,
+    setGeneralTitles: React.Dispatch<
+      React.SetStateAction<GeneralTitle[] | null>
+    >,
+    generalTitles: GeneralTitle[] | null
+  ) => {
+    if (!generalTitles) return;
+    const data = {
+      id,
+      name,
+      description: "",
+      adminId: Cookies.get("admin-token") || "",
     };
-  
-    public handleDeleteGeneralTitle = async (
-      id: string,
-      setGeneralTitles: React.Dispatch<React.SetStateAction<GeneralTitle[] | null>>,
-      generalTitles: GeneralTitle[] | null
-    ) => {
-      if (!generalTitles) return;
-      
-      try {
-        await generalTitleController.DeleteTitle({id});
-        setGeneralTitles(generalTitles.filter((generalTitle) => generalTitle._id !== id));
-      } catch (error) {
-        console.log(error);
-      }
-    };
+    try {
+      const response = await generalTitleController.UpdateTitle(data);
+      setGeneralTitles(
+        generalTitles.map((generalTitle) =>
+          generalTitle._id === id ? { ...generalTitle, name } : generalTitle
+        )
+      );
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  public handleDeleteGeneralTitle = async (
+    id: string,
+    setGeneralTitles: React.Dispatch<
+      React.SetStateAction<GeneralTitle[] | null>
+    >,
+    generalTitles: GeneralTitle[] | null
+  ) => {
+    if (!generalTitles) return;
+
+    try {
+      swalWithBootstrapButtons
+        .fire({
+          title: "Estas seguro de eliminar",
+          text: "No puedes volver a regresarla!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Si!",
+          cancelButtonText: "No, cancelar!",
+          reverseButtons: true,
+        })
+        .then(async (result: any) => {
+          if (result.isConfirmed) {
+            await generalTitleController.DeleteTitle({ id });
+            setGeneralTitles(
+              generalTitles.filter((generalTitle) => generalTitle._id !== id)
+            );
+            swalWithBootstrapButtons.fire({
+              title: "Eliminado!",
+              text: "eliminado correctamente",
+              icon: "success",
+            });
+          }
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 }
 
 export default CatalogRepository;

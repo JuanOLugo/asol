@@ -6,7 +6,7 @@ import { useState } from "react"
 import { X, Plus, Trash2, ChevronLeft, ChevronRight } from "lucide-react"
 
 interface Question {
-  id: string
+  _id: string
   question: string
   options: string[]
   correctAnswer: number
@@ -62,7 +62,7 @@ export function QuestionCreationModal({
 
     // Create new question
     const newQuestion: Question = {
-      id: `question-${Date.now()}`,
+      _id: `question-${Date.now()}`,
       question: questionText,
       options: [...options],
       correctAnswer,
@@ -263,7 +263,7 @@ export function QuestionCreationModal({
 
                       {/* Delete Button */}
                       <button
-                        onClick={() => onDeleteQuestion(questions[currentSlide].id)}
+                        onClick={() => onDeleteQuestion(questions[currentSlide]._id)}
                         className="absolute top-0 right-0 p-1 text-red-600 hover:bg-red-100 rounded-full"
                         aria-label="Delete question"
                       >

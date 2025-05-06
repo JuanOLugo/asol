@@ -97,23 +97,44 @@ class CourseController {
   }
 
   public async updateCourse(req: Request, res: Response): Promise<void> {
-    const course = req.body;
-    const courseId = req.params.id;
-    try {
-      const courseUpdated = await courseRepository.updateCourse(
-        courseId,
-        course
+    const EnterpriseId: string = (req.user as { _id: string })._id;
+    const course = JSON.parse(req.body.data);
+    let uploadedFile: UploadedFile[] = [];
+    const adminId = await adminEntity.DeserializeAdminToken(course.Admin);
+
+    //File upload and delete
+    if (!req.files?.file || !req.files) console.log("No archivos");
+    if (!course.files) console.log("No hay archivos para eliminar");
+    else {
+      courseEntity.DeleteFiles(
+        course.files.map((f: any) => f.name),
+        course._id
       );
-      res.status(200).json(courseUpdated);
-    } catch (error: any) {
-      res.status(400).json({ message: error.message });
+      if (req.files?.file instanceof Array) uploadedFile = [...req.files.file];
+      else if (req.files?.file) uploadedFile.push(req.files.file);
+      
+      courseEntity.SaveCourseFiles(uploadedFile, course);
     }
+    //Course update
+    try {
+      const courseUpdated = await courseRepository.updateCourse(course._id, course, EnterpriseId, adminId);
+      console.log(courseUpdated)
+      res.status(200).send("Curso actualizado correctamente");
+    } catch (error) {
+      console.log(error)
+    }
+    
   }
 
   public async deleteCourse(req: Request, res: Response): Promise<void> {
     const courseId = req.params.id;
+    const enterpriseId = (req.user as { _id: string })._id;
     try {
-      const courseDeleted = await courseRepository.deleteCourse(courseId);
+      const courseDeleted = await courseRepository.deleteCourse(
+        courseId,
+        enterpriseId
+      );
+      courseEntity.DeleteCourseFiles(courseId);
       res.status(200).json(courseDeleted);
     } catch (error: any) {
       res.status(400).json({ message: error.message });
@@ -122,9 +143,17 @@ class CourseController {
 
   public async getCourseById(req: Request, res: Response): Promise<void> {
     const courseId = req.params.id;
+    const enterpriseId = (req.user as { _id: string })._id;
     try {
-      const courseById = await courseRepository.getCourseById(courseId);
-      res.status(200).json(courseById);
+      const courseById = await courseRepository.getCourseById(
+        courseId,
+        enterpriseId
+      );
+      const files = courseEntity.GetFilesByCourse(courseId);
+      res.status(200).json({
+        ...courseById,
+        files,
+      });
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }

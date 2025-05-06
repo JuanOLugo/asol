@@ -11,9 +11,10 @@ CourseRouter.post(
   fileUpload(),
   new CourseController().createCourse
 );
-CourseRouter.put(
-  "/update/:id",
+CourseRouter.post(
+  "/update",
   passportConfig.authenticate("jwt", { session: false }),
+  fileUpload(),
   new CourseController().updateCourse
 );
 CourseRouter.delete(

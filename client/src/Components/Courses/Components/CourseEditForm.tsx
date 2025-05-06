@@ -16,16 +16,17 @@ import { CapacityTypeSelectionModal } from "./CapacityTypeSelectionModal";
 import { CategorySelectionModal } from "./CategorySelectionmodal";
 import { QuestionCreationModal } from "./QuestionCreationModal";
 import { formattedDate } from "../../../Config/Utils/Date";
+import { useParams } from "react-router-dom";
 import AdminControllers from "../../Catalog/Controllers/_admin_";
 import { Category } from "../../Catalog/Interfaces/Category";
 import { Training } from "../../Catalog/Interfaces/CatalogList";
 import CourseController from "../Controllers/Course";
-
+import { swalWithBootstrapButtons } from "../../../Config/SwalConfig";
 export interface Question {
-  _id: string;
   question: string;
   options: string[];
   correctAnswer: number;
+  _id: string;
 }
 
 export interface File {
@@ -34,11 +35,13 @@ export interface File {
   size: number;
   type: string;
   url: string;
-  file: globalThis.File
+  file: globalThis.File;
 }
-const { CreateCourse } = new CourseController();
+const { GetIndividualCourse, UpdateCourse } = new CourseController();
 const { GetCatalog } = new AdminControllers();
-export function CourseForm() {
+export function CourseEditForm() {
+  const { id } = useParams();
+
   // Form state
   const [formData, setFormData] = useState({
     name: "",
@@ -51,30 +54,50 @@ export function CourseForm() {
   const [DefaultCapacity, setDefaultCapacity] = useState<Training[]>([]);
   const data = new FormData();
   const onSubmit = async (courseData: any) => {
-    data.append("data", JSON.stringify({
-      ...courseData,
-      Admin: Cookies.get("admin-token")
-    }));
-    files.forEach((fileObj: File & { file?: Blob }) => {
-      if (fileObj.file) data.append("file", fileObj.file);
-    });
-    try {
-      const response = await CreateCourse(data);
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-    }
-    setFormData({
-      name: "",
-      description: "",
-      title: "",
-    });
-    setFiles([]);
-    setSelectedCategory("");
-    setSelectedCapacityTypes([]);
-    setQuestions([]);
-    data.delete("files");
-    data.delete("data");
+    swalWithBootstrapButtons
+      .fire({
+        title: "Estas seguro de editar este curso?",
+        text: "",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Si!",
+        cancelButtonText: "No, cancelar!",
+        reverseButtons: true,
+      })
+      .then(async (result: any) => {
+        if (result.isConfirmed) {
+          console.log("so")
+          data.append(
+            "data",
+            JSON.stringify({
+              ...courseData,
+              _id: id,
+              Admin: Cookies.get("admin-token"),
+            })
+          );
+          files.forEach((fileObj: File & { file?: Blob }) => {
+            if (fileObj.file) data.append("file", fileObj.file);
+          });
+          try {
+            const response = await UpdateCourse(data);
+            console.log(response);
+          } catch (error) {
+            console.log(error);
+          }
+          setFormData({
+            name: "",
+            description: "",
+            title: "",
+          });
+          setFiles([]);
+          setSelectedCategory("");
+          setSelectedCapacityTypes([]);
+          setQuestions([]);
+          data.delete("files");
+          data.delete("data");
+          window.location.href = "/admin/cursos";
+        }
+      });
   };
 
   // Selected items state
@@ -167,6 +190,7 @@ export function CourseForm() {
     setSelectedCategory(categoryId);
     setSelectedCategoryName(categoryName);
     setIsCategoryModalOpen(false);
+    setSelectedCapacityTypes([]);
   };
 
   // Question Modal handlers
@@ -201,13 +225,10 @@ export function CourseForm() {
         size: file.size,
         type: file.type,
         url: fileUrl,
-        file: file
+        file: file,
       });
     }
     setFiles((prev) => [...prev, ...newFiles]);
-
-   
-
 
     // Reset the input
     e.target.value = "";
@@ -240,15 +261,52 @@ export function CourseForm() {
   useEffect(() => {
     GetCatalog().then((res) => {
       setCategories(res.categories);
-      console.log(res.catalog);
       setDefaultCapacity(res.catalog);
+    });
+    if (!id) return;
+    GetIndividualCourse(id).then((res) => {
+      console.log(res);
+      setFormData((prev) => ({
+        ...prev,
+        name: res.course.name || "",
+        description: res.course.description || "",
+      }));
+      handleSelectCategory(res.course.category._id, res.course.category.name);
+      setSelectedCapacityTypes(
+        res.course.capacityType.map((e: { _id: string }) => e._id)
+      );
+      setFiles(
+        res.files.map((f: any) => {
+          return {
+            id: f.size * +new Date(),
+            name: f.name,
+            size: f.size,
+            type: f.extension.split(".")[0],
+            url: f.path,
+            file: f,
+          };
+        })
+      );
+      if (res.questions) {
+        const data = res.questions.map((q: any) => {
+          return {
+            question: q.question,
+            options: q.answers.map((a: any) => a.name),
+            correctAnswer: q.answers.findIndex(
+              (a: any) => a._id == q.correctAnswer._id
+            ),
+            _id: q._id,
+          };
+        });
+
+        setQuestions(data);
+      }
     });
   }, []);
 
   useEffect(() => {
     if (!selectedCategory) return;
     if (selectedCategory?.length > 0) {
-      setSelectedCapacityTypes([]);
       const CapacitysFilter = DefaultCapacity.filter(
         (c) => c.category?._id === selectedCategory
       );
@@ -256,12 +314,30 @@ export function CourseForm() {
     }
   }, [selectedCategory]);
 
+  useEffect(() => {
+    console.log(
+      CapacityTypes,
+      tempSelectedCapacityTypes,
+      Categories,
+      questions,
+      formData,
+      files
+    );
+  }, [
+    CapacityTypes,
+    tempSelectedCapacityTypes,
+    Categories,
+    questions,
+    formData,
+    files,
+  ]);
+
   return (
     <>
       <div className="bg-white rounded-lg shadow-md overflow-hidden w-full mx-auto h-screen overflow-y-auto">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between bg-white rounded-lg shadow-md p-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-800">Crear curso</h1>
+            <h1 className="text-2xl font-bold text-gray-800">Editar curso</h1>
             <p className="text-gray-600">{formattedDate}</p>
           </div>
         </div>

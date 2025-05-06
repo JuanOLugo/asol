@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 import { connectDb } from "../Db/conexion.db";
+import fs from "fs"
 
 // Routes
 import UserRouter from "../../Interfaces/Http/Routes/User";
@@ -53,8 +54,10 @@ app.use('/archivos', express.static(path.join(__dirname + '../../../../public/Fi
 // Start server
 const port = process.env.PORT || 3000;
 
-connectDb().then(() => {
-  app.listen(port, () => {
-    console.log("Server is running on port", port);
+
+app.listen(port, () => {
+  console.log("Server is running on port", port);
+  connectDb().then(() => {
+    console.log("DB UP")
   });
 });

@@ -10,6 +10,7 @@ import CoursesPage from "./Components/Courses/Views/Course";
 import TrainersPage from "./Components/Capacitation/Views/Capacitation";
 import CatalogPage from "./Components/Catalog/Views/Catalog";
 import { CourseForm } from "./Components/Courses/Components/CourseForm";
+import { CourseEditForm } from "./Components/Courses/Components/CourseEditForm";
 function App() {
   return (
     <>
@@ -31,6 +32,7 @@ function App() {
           <Route path="/admin/cursos/create" element={<CourseForm />} />
           <Route path="/admin/capacitadores" element={<TrainersPage />} />
           <Route path="/admin/catalogo" element={<CatalogPage />} />
+          <Route path="/admin/cursos/edit/:id" element={<CourseEditForm/>} />
         </Route>
 
         <Route element={<PublicRoute />}>
