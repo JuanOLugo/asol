@@ -60,7 +60,6 @@ class CourseRepository {
   }
 
   public async updateCourse(courseId: string, Course: any, enterpriseId: string, admin: string): Promise<any> {
-    console.log(Course.questions);
     // filtrar curso y actualizar
     const course = await CourseModel.findByIdAndUpdate(courseId, {
       name: Course.name,
@@ -104,7 +103,6 @@ class CourseRepository {
     const questionsToCreate = Course.questions.map(async (q: any) => {
       const answers = await Promise.all(
         q.options.map(async (a: any, i: number) => { 
-          console.log(a, " ldalsdl lsdalsdlalsd asdlalsdl")
           const newAnswer = await answerRepository.CreateAnswer({ name: a });
           if (q.correctAnswer === i) {
             q.correctAnswer = newAnswer._id;
@@ -112,7 +110,6 @@ class CourseRepository {
           return newAnswer._id;
         })
       );
-      console.log(answers);
       return {
         question: q.question,
         answers: answers,

@@ -11,6 +11,7 @@ import WorkShopRepository from "../../../Domain/Repositories/Workshop";
 import WorkshopQuestionsRepository from "../../../Domain/Repositories/WorshopQuestions";
 import Answer from "../../../Domain/Interfaces/Db Interfaces/Answer";
 import AnswerRpository from "../../../Domain/Repositories/Answer";
+import { Console } from "console";
 const adminEntity = new AdminEntity();
 const courseRepository = new CourseRepository();
 const courseEntity = new CourseEntity();
@@ -100,30 +101,31 @@ class CourseController {
     const EnterpriseId: string = (req.user as { _id: string })._id;
     const course = JSON.parse(req.body.data);
     let uploadedFile: UploadedFile[] = [];
+    console.log("Se eliminaran archivos", course.filesToDelete);
     const adminId = await adminEntity.DeserializeAdminToken(course.Admin);
-
     //File upload and delete
     if (!req.files?.file || !req.files) console.log("No archivos");
-    if (!course.files) console.log("No hay archivos para eliminar");
+    if (!course.filesToDelete) console.log("No hay archivos para eliminar");
     else {
-      courseEntity.DeleteFiles(
-        course.files.map((f: any) => f.name),
-        course._id
-      );
+      courseEntity.DeleteFiles(course.filesToDelete, course._id);
+
       if (req.files?.file instanceof Array) uploadedFile = [...req.files.file];
       else if (req.files?.file) uploadedFile.push(req.files.file);
-      
+
       courseEntity.SaveCourseFiles(uploadedFile, course);
     }
     //Course update
     try {
-      const courseUpdated = await courseRepository.updateCourse(course._id, course, EnterpriseId, adminId);
-      console.log(courseUpdated)
+      const courseUpdated = await courseRepository.updateCourse(
+        course._id,
+        course,
+        EnterpriseId,
+        adminId
+      );
       res.status(200).send("Curso actualizado correctamente");
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-    
   }
 
   public async deleteCourse(req: Request, res: Response): Promise<void> {

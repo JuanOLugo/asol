@@ -52,6 +52,7 @@ export function CourseEditForm() {
   const [CapacityTypes, setCapacityTypes] = useState<Training[]>([]);
   const [Categories, setCategories] = useState<Category[]>([]);
   const [DefaultCapacity, setDefaultCapacity] = useState<Training[]>([]);
+  const [FilesToDelete, setFilesToDelete] = useState<string[]>([]);
   const data = new FormData();
   const onSubmit = async (courseData: any) => {
     swalWithBootstrapButtons
@@ -72,6 +73,7 @@ export function CourseEditForm() {
             JSON.stringify({
               ...courseData,
               _id: id,
+              filesToDelete: FilesToDelete,
               Admin: Cookies.get("admin-token"),
             })
           );
@@ -240,8 +242,13 @@ export function CourseEditForm() {
       if (fileToRemove && fileToRemove.url.startsWith("blob:")) {
         URL.revokeObjectURL(fileToRemove.url);
       }
+      
       return prev.filter((f) => f.id !== fileId);
     });
+
+    const fileToRemove = files.find((f) => f.id === fileId)
+    if(!fileToRemove) return;
+    setFilesToDelete([...FilesToDelete,  fileToRemove.name ]);
   };
 
   // Get selected capacity type names for display

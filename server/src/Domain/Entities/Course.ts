@@ -65,22 +65,23 @@ class CourseEntity {
   }
 
   public DeleteFiles(files: string[], courseID: string) {
-    for(let i = 0 ; i < (files.length > 0 ? files.length : 10); i++){
+    for (let i = 0; i < files.length; i++) {
       const file = files[i] || "undefined";
       const filePath = path.join(dir + "/course-" + courseID);
       fs.readdir(filePath, (err, files) => {
-        if(err) return false;
+        if (err) return false;
         files.forEach((f) => {
-          if (f !== file) {
-            fs.unlink(path.join(filePath, f), (err) => {
-              if (err) false
-            });
+          if (f === file) {
+            if (fs.existsSync(path.join(filePath, f))) {
+              fs.unlinkSync(path.join(filePath, f));
+            } else {
+              console.log("No existe el archivo", path.join(filePath, f));
+            }
           }
         });
       });
     }
   }
-
 }
 
 export default CourseEntity;
